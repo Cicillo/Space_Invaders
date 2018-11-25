@@ -25,8 +25,6 @@ public class GameLogic {
 
 	private Vec2D alienPosition;
 
-	private volatile boolean frozen;
-
 	public GameLogic() {
 		this.aliens = new TreeSet<>();
 	}
@@ -41,14 +39,6 @@ public class GameLogic {
 
 	public Vec2D getAlienPosition() {
 		return alienPosition;
-	}
-
-	public boolean isFrozen() {
-		return frozen;
-	}
-
-	public void setFrozen(boolean frozen) {
-		this.frozen = frozen;
 	}
 
 	public Vec2D getAlienPosition(IntegerCoordinates coords) {
@@ -87,10 +77,6 @@ public class GameLogic {
 	}
 
 	public void tickGame() {
-		if (frozen) {
-			return;
-		}
-
 		updateAliens();
 
 		// TODO: other stuff
