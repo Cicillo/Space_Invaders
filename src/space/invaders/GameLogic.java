@@ -54,15 +54,14 @@ public class GameLogic {
 	public Vec2D getAlienPosition(IntegerCoordinates coords) {
 		return getAlienPosition(coords.getX(), coords.getY());
 	}
-	
+
 	public Vec2D getAlienPosition(int gridX, int gridY) {
 		double x = gridX * (GameConstants.ALIEN_SIZE + GameConstants.ALIEN_SPACING_H);
 		double y = gridY * (GameConstants.ALIEN_SIZE + GameConstants.ALIEN_SPACING_V);
-		
+
 		return alienPosition.plus(new Vec2D(x, y));
 	}
-	
-	
+
 	public void generateGame() {
 		// Add coordinates to a distinct set to maximize later efficiency
 		// -> If they were added directly, the TreeSet would end up as a linked list.
@@ -91,16 +90,28 @@ public class GameLogic {
 		if (frozen) {
 			return;
 		}
-		
+
 		updateAliens();
-		
+
 		// TODO: other stuff
 	}
-	
+
 	private void updateAliens() {
-		// Moving right
+
+		// Move down
+		if (getAlienPosition(rightmostAlien, 0).getX() >= GameConstants.RIGHT_GAME_BOUND
+				|| getAlienPosition(leftmostAlien, 0).getX() <= GameConstants.LEFT_GAME_BOUND) {
+			
+			this.alienPosition = alienPosition.plus(GameConstants.ALIEN_MOVE_DOWN);
+			return;
+		}
+
 		if (alienMovementDirection) {
-			// Check if reached the wall
+			// Move right
+			this.alienPosition = alienPosition.plus(GameConstants.ALIEN_MOVE_RIGHT);
+		} else {
+			// Move left
+			this.alienPosition = alienPosition.plus(GameConstants.ALIEN_MOVE_LEFT);
 		}
 	}
 }

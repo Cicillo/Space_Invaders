@@ -20,4 +20,7 @@ public interface GameConstants {
 	double ALIEN_SPACING_V = 25;
 	
 	Vec2D START_ALIEN_POSITION = new Vec2D(LEFT_GAME_BOUND, 200);
+	Vec2D ALIEN_MOVE_LEFT = new Vec2D(20, 0);
+	Vec2D ALIEN_MOVE_RIGHT = new Vec2D(-20, 0);
+	Vec2D ALIEN_MOVE_DOWN = new Vec2D(0, 20);
 }
