@@ -14,11 +14,13 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		GamePane pane = new GamePane();
 		Scene scene = new Scene(pane, GameConstants.SCREEN_WIDTH, GameConstants.SCREEN_HEIGHT);
-		pane.initPane();
+		pane.initialize();
 		
 		primaryStage.setTitle("Space Invaders");
 		primaryStage.setScene(scene);
 		primaryStage.show();
+		
+		pane.drawCanvas();
 	}
 
 	/**

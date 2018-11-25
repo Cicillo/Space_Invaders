@@ -56,8 +56,8 @@ public class GameLogic {
 	}
 
 	public Vec2D getAlienPosition(int gridX, int gridY) {
-		double x = gridX * (GameConstants.ALIEN_SIZE + GameConstants.ALIEN_SPACING_H);
-		double y = gridY * (GameConstants.ALIEN_SIZE + GameConstants.ALIEN_SPACING_V);
+		double x = gridX * (GameConstants.ALIEN_SIZE + GameConstants.ALIEN_SPACING_V);
+		double y = gridY * (GameConstants.ALIEN_SIZE + GameConstants.ALIEN_SPACING_H);
 
 		return alienPosition.plus(new Vec2D(x, y));
 	}
