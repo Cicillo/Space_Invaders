@@ -25,11 +25,7 @@ public class AssetManager {
 		return audioMap.get(auR);
 	}
 
-	static private String fileURL(String relativePath) {
-		return new File(relativePath).toURI().toString();
-	}
-
-	static {
+	public void initialize() {
 		
 	}
 }
