@@ -97,21 +97,16 @@ public class GameLogic {
 	}
 
 	private void updateAliens() {
-
 		// Move down
 		if (getAlienPosition(rightmostAlien, 0).getX() >= GameConstants.RIGHT_GAME_BOUND
 				|| getAlienPosition(leftmostAlien, 0).getX() <= GameConstants.LEFT_GAME_BOUND) {
-			
+
 			this.alienPosition = alienPosition.plus(GameConstants.ALIEN_MOVE_DOWN);
 			return;
 		}
 
-		if (alienMovementDirection) {
-			// Move right
-			this.alienPosition = alienPosition.plus(GameConstants.ALIEN_MOVE_RIGHT);
-		} else {
-			// Move left
-			this.alienPosition = alienPosition.plus(GameConstants.ALIEN_MOVE_LEFT);
-		}
+		// Move right or left
+		Vec2D move = alienMovementDirection ? GameConstants.ALIEN_MOVE_RIGHT : GameConstants.ALIEN_MOVE_LEFT;
+		this.alienPosition = alienPosition.plus(move);
 	}
 }
