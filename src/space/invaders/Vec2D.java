@@ -55,6 +55,14 @@ public class Vec2D {
 		return new Vec2D(this.x / k, this.y / k);
 	}
 
+	public Vec2D scale(double kx, double ky) {
+		return new Vec2D(this.x * kx, this.y * ky);
+	}
+
+	public Vec2D divide(double kx, double ky) {
+		return new Vec2D(this.x / kx, this.y / ky);
+	}
+
 	public double norm() {
 		return Math.sqrt(normSquared());
 	}

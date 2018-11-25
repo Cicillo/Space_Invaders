@@ -13,6 +13,8 @@ public interface GameConstants {
 
 	double LEFT_GAME_BOUND = 20;
 	double RIGHT_GAME_BOUND = SCREEN_SIZE.getX() - 20;
+	double TOP_GAME_BOUND = 120;
+	double BOTTOM_GAME_BOUND = SCREEN_SIZE.getY() - 50;
 
 	Vec2D ALIEN_SIZE = new Vec2D(50, 50);
 	Vec2D ALIEN_SPACING = new Vec2D(30, 35);
@@ -26,10 +28,10 @@ public interface GameConstants {
 	double RENDER_FPS = 60;
 
 	// Start position of aliens
-	Vec2D START_ALIEN_POSITION = new Vec2D(LEFT_GAME_BOUND, 120);
+	Vec2D START_ALIEN_POSITION = new Vec2D(LEFT_GAME_BOUND, TOP_GAME_BOUND);
 
 	// Horizontal speed of aliens, in pixels per second.
-	Vec2D ALIEN_MOVEMENT_SPEED = new Vec2D(20, 0).divide(GAME_TPS);
+	Vec2D ALIEN_MOVEMENT_SPEED = new Vec2D(50, 0).divide(GAME_TPS);
 
 	// The vertical jump aliens do when reaching the end of the screen
 	Vec2D ALIEN_DOWN_JUMP = new Vec2D(0, 20);

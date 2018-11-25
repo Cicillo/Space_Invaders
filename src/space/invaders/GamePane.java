@@ -40,7 +40,7 @@ public class GamePane extends AnchorPane {
 		this.scoreLabel = new Label("0");
 		this.levelLabel = new Label("1");
 		this.highscoreLabel = new Label("0");
-		this.spaceship = new Rectangle(GameConstants.LEFT_GAME_BOUND, GameConstants.SPACESHIP_Y, GameConstants.SPACESHIP_WIDTH, GameConstants.SPACESHIP_HEIGHT);
+		this.spaceship = new Rectangle(GameConstants.LEFT_GAME_BOUND, GameConstants.SPACESHIP_Y, GameConstants.SPACESHIP_SIZE.getX(), GameConstants.SPACESHIP_SIZE.getX());
 	}
 
 	public void initialize() {
@@ -72,22 +72,37 @@ public class GamePane extends AnchorPane {
 		this.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
 
 		scene.setOnMouseMoved(e -> {
-			double pos = e.getSceneX() - GameConstants.SPACESHIP_WIDTH / 2;
-			spaceship.setX(Math.max(GameConstants.LEFT_GAME_BOUND, Math.min(GameConstants.RIGHT_GAME_BOUND, pos)));
+			double pos = e.getSceneX() - GameConstants.SPACESHIP_SIZE.getX() / 2;
+			spaceship.setX(Math.max(10, Math.min(GameConstants.SCREEN_SIZE.getX() - GameConstants.SPACESHIP_SIZE.getX(), pos)));
 		});
 	}
 
 	public void drawCanvas() {
 		GraphicsContext graphics = canvas.getGraphicsContext2D();
 
-		// 1. Draw Aliens
+		// 1. Clear Canvas
+		clearCanvas(graphics);
+
+		// 2. Draw Aliens
 		graphics.setFill(Color.RED);
 		for (IntegerCoordinates coords : gameLogic.getAliens()) {
 			Vec2D pos = gameLogic.getAlienPosition(coords);
-			graphics.fillRect(pos.getX(), pos.getY(), GameConstants.ALIEN_SIZE, GameConstants.ALIEN_SIZE);
+			graphics.fillRect(pos.getX(), pos.getY(), GameConstants.ALIEN_SIZE.getX(), GameConstants.ALIEN_SIZE.getY());
 		}
 
-		// 2. Draw projectiles
+		// 3. Draw projectiles
+	}
+
+	private static final double GAME_AREA_WIDTH = GameConstants.RIGHT_GAME_BOUND - GameConstants.LEFT_GAME_BOUND;
+	private static final double GAME_AREA_HEIGHT = GameConstants.BOTTOM_GAME_BOUND - GameConstants.TOP_GAME_BOUND;
+
+	private void clearCanvas(GraphicsContext graphics) {
+		Vec2D pos = GameConstants.START_ALIEN_POSITION;
+		graphics.clearRect(pos.getX(), pos.getY(), GAME_AREA_WIDTH, GAME_AREA_HEIGHT);
+	}
+
+	public void tick() {
+		gameLogic.tickGame();
 	}
 
 	private static void formatLabels(Label... labels) {

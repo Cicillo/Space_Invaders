@@ -45,11 +45,10 @@ public class GameLogic {
 		return getAlienPosition(coords.getX(), coords.getY());
 	}
 
-	public Vec2D getAlienPosition(int gridX, int gridY) {
-		double x = gridX * (GameConstants.ALIEN_SIZE + GameConstants.ALIEN_SPACING_V);
-		double y = gridY * (GameConstants.ALIEN_SIZE + GameConstants.ALIEN_SPACING_H);
+	private static final Vec2D ALIEN_DELTA = GameConstants.ALIEN_SIZE.plus(GameConstants.ALIEN_SPACING);
 
-		return alienPosition.plus(new Vec2D(x, y));
+	public Vec2D getAlienPosition(int gridX, int gridY) {
+		return alienPosition.plus(ALIEN_DELTA.scale(gridX, gridY));
 	}
 
 	public void generateGame() {
@@ -83,16 +82,29 @@ public class GameLogic {
 	}
 
 	private void updateAliens() {
-		// Move down
-		if (getAlienPosition(rightmostAlien, 0).getX() >= GameConstants.RIGHT_GAME_BOUND
-				|| getAlienPosition(leftmostAlien, 0).getX() <= GameConstants.LEFT_GAME_BOUND) {
+		// Check if wall was hit
+		if (shouldAliensJumpDown()) {
 
-			this.alienPosition = alienPosition.plus(GameConstants.ALIEN_MOVE_DOWN);
+			// Move down
+			this.alienPosition = alienPosition.plus(GameConstants.ALIEN_DOWN_JUMP);
+
+			// Invert direction
+			this.alienMovementDirection = !alienMovementDirection;
 			return;
 		}
 
 		// Move right or left
-		Vec2D move = alienMovementDirection ? GameConstants.ALIEN_MOVE_RIGHT : GameConstants.ALIEN_MOVE_LEFT;
-		this.alienPosition = alienPosition.plus(move);
+		Vec2D move = GameConstants.ALIEN_MOVEMENT_SPEED;
+		this.alienPosition = (alienMovementDirection) ? alienPosition.plus(move) : alienPosition.minus(move);
+	}
+
+	private boolean shouldAliensJumpDown() {
+		if (alienMovementDirection) {
+			// Jump down when moving right & hit right wall
+			return getAlienPosition(rightmostAlien, 0).getX() + GameConstants.ALIEN_SIZE.getX() >= GameConstants.RIGHT_GAME_BOUND;
+		} else {
+			// Jump down when moving left & hit left wall
+			return getAlienPosition(leftmostAlien, 0).getX() <= GameConstants.LEFT_GAME_BOUND;
+		}
 	}
 }
