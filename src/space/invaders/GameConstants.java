@@ -19,7 +19,7 @@ public interface GameConstants {
 	/**
 	 * The spacing between adjacent aliens.
 	 */
-	Vec2D ALIEN_SPACING = new Vec2D(30, 35);
+	Vec2D ALIEN_SPACING = new Vec2D(30, 25);
 
 	/**
 	 * The size of the spaceship.
@@ -86,5 +86,5 @@ public interface GameConstants {
 	 * The vertical jump aliens take when they reach the game bounds. The jump
 	 * is instantaneous and therefore does not depend on {@link #GAME_TPS}.
 	 */
-	Vec2D ALIEN_DOWN_JUMP = new Vec2D(0, 20);
+	Vec2D ALIEN_DOWN_JUMP = new Vec2D(0, (ALIEN_SIZE.getY() + ALIEN_SPACING.getY()) / 2);
 }
