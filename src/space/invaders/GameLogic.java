@@ -3,6 +3,7 @@ package space.invaders;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
+import space.invaders.enemies.Enemy;
 
 /**
  *
@@ -10,101 +11,95 @@ import java.util.TreeSet;
  */
 public class GameLogic {
 
-	private final TreeSet<IntegerCoordinates> aliens;
+	private final TreeSet<Enemy> enemies;
 
-	private int leftmostAlien;
-	private int rightmostAlien;
-	private int downmostAlien;
+	private int leftmostEnemy;
+	private int rightmostEnemy;
+	private int downmostEnemy;
 	private int remainingLives;
 
 	/**
-	 * The direction in which aliens move. Left is {@code true} while right is
+	 * The direction in which enemies move. Left is {@code true} while right is
 	 * {@code false}.
 	 */
-	private boolean alienMovementDirection;
+	private boolean enemyMovementDirection;
 
-	private Vec2D alienPosition;
+	private Vec2D enemyPosition;
 
 	public GameLogic() {
-		this.aliens = new TreeSet<>();
+		this.enemies = new TreeSet<>();
 	}
 
-	public TreeSet<IntegerCoordinates> getAliens() {
-		return aliens;
+	public TreeSet<Enemy> getEnemies() {
+		return enemies;
 	}
 
 	public int getRemainingLives() {
 		return remainingLives;
 	}
 
-	public Vec2D getAlienPosition() {
-		return alienPosition;
+	public Vec2D getEnemyPosition() {
+		return enemyPosition;
 	}
 
-	public Vec2D getAlienPosition(IntegerCoordinates coords) {
-		return getAlienPosition(coords.getX(), coords.getY());
+	public Vec2D getEnemyPosition(int gridX, int gridY) {
+		return enemyPosition.plus(GameConstants.ENEMY_DELTA.scale(gridX, gridY));
 	}
-
-	private static final Vec2D ALIEN_DELTA = GameConstants.ALIEN_SIZE.plus(GameConstants.ALIEN_SPACING);
-
-	public Vec2D getAlienPosition(int gridX, int gridY) {
-		return alienPosition.plus(ALIEN_DELTA.scale(gridX, gridY));
-	}
-
+	
 	public void generateGame() {
 		// Add coordinates to a distinct set to maximize later efficiency
 		// -> If they were added directly, the TreeSet would end up as a linked list.
 		Set<IntegerCoordinates> set = new HashSet<>();
-		for (int x = 0; x < GameConstants.ALIENS_GRID_LENGTH; ++x) {
-			for (int y = 0; y < GameConstants.ALIENS_GRID_HEIGHT; ++y) {
+		for (int x = 0; x < GameConstants.ENEMIES_GRID_LENGTH; ++x) {
+			for (int y = 0; y < GameConstants.ENEMIES_GRID_HEIGHT; ++y) {
 				set.add(new IntegerCoordinates(x, y));
 			}
 		}
 
-		aliens.addAll(set);
+		enemies.addAll(set);
 
-		// Make aliens move right
-		alienMovementDirection = true;
+		// Make enemies move right
+		enemyMovementDirection = true;
 
 		// Initialize start position
-		alienPosition = GameConstants.START_ALIEN_POSITION;
+		enemyPosition = GameConstants.START_ENEMIES_POSITION;
 
 		// Initialize index pointers
-		leftmostAlien = 0;
-		rightmostAlien = GameConstants.ALIENS_GRID_LENGTH - 1;
-		downmostAlien = GameConstants.ALIENS_GRID_HEIGHT - 1;
+		leftmostEnemy = 0;
+		rightmostEnemy = GameConstants.ENEMIES_GRID_LENGTH - 1;
+		downmostEnemy = GameConstants.ENEMIES_GRID_HEIGHT - 1;
 	}
 
 	public void tickGame() {
-		updateAliens();
+		updateEnemies();
 
 		// TODO: other stuff
 	}
 
-	private void updateAliens() {
+	private void updateEnemies() {
 		// Check if wall was hit
-		if (shouldAliensJumpDown()) {
+		if (shouldEnemiesJumpDown()) {
 
 			// Move down
-			this.alienPosition = alienPosition.plus(GameConstants.ALIEN_DOWN_JUMP);
+			this.enemyPosition = enemyPosition.plus(GameConstants.ENEMY_DOWN_JUMP);
 
 			// Invert direction
-			this.alienMovementDirection = !alienMovementDirection;
+			this.enemyMovementDirection = !enemyMovementDirection;
 			return;
 		}
 
 		// Move right or left
-		Vec2D move = GameConstants.ALIEN_MOVEMENT_SPEED;
-		this.alienPosition = (alienMovementDirection) ? alienPosition.plus(move) : alienPosition.minus(move);
+		Vec2D move = GameConstants.ENEMY_MOVEMENT_SPEED;
+		this.enemyPosition = (enemyMovementDirection) ? enemyPosition.plus(move) : enemyPosition.minus(move);
 	}
 
-	private boolean shouldAliensJumpDown() {
-		if (alienMovementDirection) {
+	private boolean shouldEnemiesJumpDown() {
+		if (enemyMovementDirection) {
 			// Jump down when moving right & hit right wall
-			return getAlienPosition(rightmostAlien, 0).getX() + GameConstants.ALIEN_SIZE.getX() >= GameConstants.RIGHT_GAME_BOUND;
+			return getEnemyPosition(rightmostEnemy, 0).getX() + GameConstants.ENEMY_SIZE.getX() >= GameConstants.RIGHT_GAME_BOUND;
 		} else {
 			// Jump down when moving left & hit left wall
-			return getAlienPosition(leftmostAlien, 0).getX() <= GameConstants.LEFT_GAME_BOUND;
+			return getEnemyPosition(leftmostEnemy, 0).getX() <= GameConstants.LEFT_GAME_BOUND;
 		}
 	}
 }

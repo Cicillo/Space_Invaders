@@ -12,14 +12,19 @@ public interface GameConstants {
 	Vec2D SCREEN_SIZE = new Vec2D(1200, 900);
 
 	/**
-	 * The size of an alien.
+	 * The size of an enemy.
 	 */
-	Vec2D ALIEN_SIZE = new Vec2D(50, 50);
+	Vec2D ENEMY_SIZE = new Vec2D(50, 50);
 
 	/**
-	 * The spacing between adjacent aliens.
+	 * The spacing between adjacent enemies.
 	 */
-	Vec2D ALIEN_SPACING = new Vec2D(30, 25);
+	Vec2D ENEMY_SPACING = new Vec2D(30, 25);
+
+	/**
+	 * The sum of the size of an enemy and the spacing between enemies.
+	 */
+	Vec2D ENEMY_DELTA = ENEMY_SIZE.plus(ENEMY_SPACING);
 
 	/**
 	 * The size of the spaceship.
@@ -27,17 +32,17 @@ public interface GameConstants {
 	Vec2D SPACESHIP_SIZE = new Vec2D(60, 40);
 
 	/**
-	 * Left bound of the game area. Aliens bounce when they reach this.
+	 * Left bound of the game area. Enemies bounce when they reach this.
 	 */
 	double LEFT_GAME_BOUND = 20;
 
 	/**
-	 * Top bound of the game area. Defines the starting position of aliens.
+	 * Top bound of the game area. Defines the starting position of enemies.
 	 */
 	double TOP_GAME_BOUND = 120;
 
 	/**
-	 * Right bound of the game area. Aliens bounce when they reach this.
+	 * Right bound of the game area. Enemies bounce when they reach this.
 	 */
 	double RIGHT_GAME_BOUND = SCREEN_SIZE.getX() - 20;
 
@@ -52,14 +57,14 @@ public interface GameConstants {
 	double SPACESHIP_Y = BOTTOM_GAME_BOUND;
 
 	/**
-	 * The number of aliens in a row.
+	 * The number of enemies in a row.
 	 */
-	int ALIENS_GRID_LENGTH = 11;
+	int ENEMIES_GRID_LENGTH = 11;
 
 	/**
-	 * The number of aliens in a column.
+	 * The number of enemies in a column.
 	 */
-	int ALIENS_GRID_HEIGHT = 5;
+	int ENEMIES_GRID_HEIGHT = 5;
 
 	/**
 	 * Number of game ticks per second.
@@ -72,21 +77,21 @@ public interface GameConstants {
 	double RENDER_FPS = 60;
 
 	/**
-	 * The starting position of aliens: at the left and top game bounds.
+	 * The starting position of enemies: at the left and top game bounds.
 	 */
-	Vec2D START_ALIEN_POSITION = new Vec2D(LEFT_GAME_BOUND, TOP_GAME_BOUND);
+	Vec2D START_ENEMIES_POSITION = new Vec2D(LEFT_GAME_BOUND, TOP_GAME_BOUND);
 
 	/**
-	 * The horizontal movement speed of aliens, in pixels per second. Value
+	 * The horizontal movement speed of enemies, in pixels per second. Value
 	 * adjusted so that it does not affected by {@link #GAME_TPS}.
 	 */
-	Vec2D ALIEN_MOVEMENT_SPEED = new Vec2D(50, 0).divide(GAME_TPS);
+	Vec2D ENEMY_MOVEMENT_SPEED = new Vec2D(50, 0).divide(GAME_TPS);
 
 	/**
-	 * The vertical jump aliens take when they reach the game bounds. The jump
+	 * The vertical jump enemies take when they reach the game bounds. The jump
 	 * is instantaneous and therefore does not depend on {@link #GAME_TPS}.
 	 */
-	Vec2D ALIEN_DOWN_JUMP = new Vec2D(0, (ALIEN_SIZE.getY() + ALIEN_SPACING.getY()) / 2);
+	Vec2D ENEMY_DOWN_JUMP = new Vec2D(0, (ENEMY_SIZE.getY() + ENEMY_SPACING.getY()) / 2);
 
 	/**
 	 * The speed at which projectiles move, in pixels per second.

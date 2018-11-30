@@ -16,6 +16,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import space.invaders.enemies.Enemy;
 
 /**
  *
@@ -83,11 +84,11 @@ public class GamePane extends AnchorPane {
 		// 1. Clear Canvas
 		clearCanvas(graphics);
 
-		// 2. Draw Aliens
+		// 2. Draw Enemies
 		graphics.setFill(Color.RED);
-		for (IntegerCoordinates coords : gameLogic.getAliens()) {
-			Vec2D pos = gameLogic.getAlienPosition(coords);
-			graphics.fillRect(pos.getX(), pos.getY(), GameConstants.ALIEN_SIZE.getX(), GameConstants.ALIEN_SIZE.getY());
+		for (Enemy enemy : gameLogic.getEnemies()) {
+			Vec2D pos = enemy.getPosition(gameLogic.getEnemyPosition());
+			graphics.fillRect(pos.getX(), pos.getY(), GameConstants.ENEMY_SIZE.getX(), GameConstants.ENEMY_SIZE.getY());
 		}
 
 		// 3. Draw projectiles
@@ -97,7 +98,7 @@ public class GamePane extends AnchorPane {
 	private static final double GAME_AREA_HEIGHT = GameConstants.BOTTOM_GAME_BOUND - GameConstants.TOP_GAME_BOUND;
 
 	private void clearCanvas(GraphicsContext graphics) {
-		Vec2D pos = GameConstants.START_ALIEN_POSITION;
+		Vec2D pos = GameConstants.START_ENEMIES_POSITION;
 		graphics.clearRect(pos.getX(), pos.getY(), GAME_AREA_WIDTH, GAME_AREA_HEIGHT);
 	}
 
