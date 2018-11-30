@@ -1,8 +1,8 @@
 package space.invaders.enemies;
 
-import java.util.Random;
 import javafx.scene.image.Image;
 import space.invaders.GameConstants;
+import space.invaders.GameLogic;
 import space.invaders.IntegerCoordinates;
 import space.invaders.Vec2D;
 import space.invaders.projectiles.Projectile;
@@ -50,9 +50,9 @@ public abstract class Enemy {
 	/**
 	 * Ticks this enemy.
 	 *
-	 * @param random a random number generator for utility purposes.
+	 * @param logic the game logic instance.
 	 */
-	public abstract void tick(Random random);
+	public abstract void tick(GameLogic logic);
 
 	/**
 	 * Handles any logic that must be handled when hit by a projectile, and

@@ -1,9 +1,11 @@
 package space.invaders;
 
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
 import space.invaders.enemies.Enemy;
+import space.invaders.projectiles.Projectile;
 
 /**
  *
@@ -11,7 +13,9 @@ import space.invaders.enemies.Enemy;
  */
 public class GameLogic {
 
+	private final Random random;
 	private final TreeSet<Enemy> enemies;
+	private final Set<Projectile> projectiles;
 
 	private int leftmostEnemy;
 	private int rightmostEnemy;
@@ -27,11 +31,29 @@ public class GameLogic {
 	private Vec2D enemyPosition;
 
 	public GameLogic() {
-		this.enemies = new TreeSet<>();
+		this.random = new Random();
+		this.enemies = new TreeSet<>((a, b) -> a.getCoordinates().compareTo(b.getCoordinates()));
+		this.projectiles = new HashSet<>();
+	}
+
+	public Random getRandom() {
+		return random;
 	}
 
 	public TreeSet<Enemy> getEnemies() {
 		return enemies;
+	}
+
+	public Set<Projectile> getProjectiles() {
+		return projectiles;
+	}
+
+	public boolean addProjectile(Projectile proj) {
+		return projectiles.add(proj);
+	}
+
+	public boolean removeProjectile(Projectile proj) {
+		return projectiles.remove(proj);
 	}
 
 	public int getRemainingLives() {
@@ -45,11 +67,11 @@ public class GameLogic {
 	public Vec2D getEnemyPosition(int gridX, int gridY) {
 		return enemyPosition.plus(GameConstants.ENEMY_DELTA.scale(gridX, gridY));
 	}
-	
+
 	public void generateGame() {
-		// Add coordinates to a distinct set to maximize later efficiency
-		// -> If they were added directly, the TreeSet would end up as a linked list.
-		Set<IntegerCoordinates> set = new HashSet<>();
+		// Add enemies to a distinct set to maximize later efficiency
+		// If they were added directly, the TreeSet would end up as a linked list.
+		Set<Enemy> set = new HashSet<>();
 		for (int x = 0; x < GameConstants.ENEMIES_GRID_LENGTH; ++x) {
 			for (int y = 0; y < GameConstants.ENEMIES_GRID_HEIGHT; ++y) {
 				set.add(new IntegerCoordinates(x, y));
@@ -71,12 +93,20 @@ public class GameLogic {
 	}
 
 	public void tickGame() {
-		updateEnemies();
+		// 1. Move the enemies around
+		moveEnemies();
 
-		// TODO: other stuff
+		// 2. Tick each enemy
+		enemies.forEach(e -> e.tick(this));
+
+		// 3. Tick each projectile
+		projectiles.forEach(Projectile::tick);
+
+		// 4. Check collisions!
+		// TODO
 	}
 
-	private void updateEnemies() {
+	private void moveEnemies() {
 		// Check if wall was hit
 		if (shouldEnemiesJumpDown()) {
 
