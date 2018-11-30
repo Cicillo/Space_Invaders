@@ -89,7 +89,7 @@ public interface GameConstants {
 	Vec2D ALIEN_DOWN_JUMP = new Vec2D(0, (ALIEN_SIZE.getY() + ALIEN_SPACING.getY()) / 2);
 
 	/**
-	 * The speed at which projectiles move.
+	 * The speed at which projectiles move, in pixels per second.
 	 */
 	double PROJECTILE_SPEED = 100 / GAME_TPS;
 

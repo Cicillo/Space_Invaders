@@ -5,7 +5,7 @@ package space.invaders;
  * @author Tomer Moran
  */
 public class Vec2D {
-
+	
 	public static final Vec2D ZERO = new Vec2D();
 
 	public static final Vec2D add(Vec2D vec, IntegerCoordinates coords) {

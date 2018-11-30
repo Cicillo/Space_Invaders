@@ -19,7 +19,7 @@ public enum ImageResources {
 	ENEMY_LASER("./assets/images/enemies/enemy_laser.png"),
 	ENEMY_TANK("./assets/images/enemy_tank.png"),
 	ENEMY_TANK_NS("./assets/images/enemies/enemy_tank_noshield.png"),
-	ENEMY_SPINER("./assets/images/enemies/enemy_spiner.png"),
+	ENEMY_SPINNER("./assets/images/enemies/enemy_spinner.png"),
 	//
 	// 2. Player & Ally Sprites
 	//
