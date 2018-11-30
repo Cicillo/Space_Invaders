@@ -15,7 +15,8 @@ public class GameLogic {
 
 	private final Random random;
 	private final TreeSet<Enemy> enemies;
-	private final Set<Projectile> projectiles;
+	private final Set<Projectile> friendlyProjectiles;
+	private final Set<Projectile> enemyProjectiles;
 
 	private int leftmostEnemy;
 	private int rightmostEnemy;
@@ -33,7 +34,8 @@ public class GameLogic {
 	public GameLogic() {
 		this.random = new Random();
 		this.enemies = new TreeSet<>((a, b) -> a.getCoordinates().compareTo(b.getCoordinates()));
-		this.projectiles = new HashSet<>();
+		this.friendlyProjectiles = new HashSet<>();
+		this.enemyProjectiles = new HashSet<>();
 	}
 
 	public Random getRandom() {
@@ -44,16 +46,20 @@ public class GameLogic {
 		return enemies;
 	}
 
-	public Set<Projectile> getProjectiles() {
-		return projectiles;
+	public Set<Projectile> getFriendlyProjectiles() {
+		return friendlyProjectiles;
+	}
+
+	public Set<Projectile> getEnemyProjectiles() {
+		return friendlyProjectiles;
 	}
 
 	public boolean addProjectile(Projectile proj) {
-		return projectiles.add(proj);
+		return (proj.isFriendly() ? friendlyProjectiles : enemyProjectiles).add(proj);
 	}
 
 	public boolean removeProjectile(Projectile proj) {
-		return projectiles.remove(proj);
+		return (proj.isFriendly() ? friendlyProjectiles : enemyProjectiles).remove(proj);
 	}
 
 	public int getRemainingLives() {
@@ -100,7 +106,8 @@ public class GameLogic {
 		enemies.forEach(e -> e.tick(this));
 
 		// 3. Tick each projectile
-		projectiles.forEach(Projectile::tick);
+		friendlyProjectiles.forEach(Projectile::tick);
+		enemyProjectiles.forEach(Projectile::tick);
 
 		// 4. Check collisions!
 		// TODO
@@ -132,4 +139,5 @@ public class GameLogic {
 			return getEnemyPosition(leftmostEnemy, 0).getX() <= GameConstants.LEFT_GAME_BOUND;
 		}
 	}
+	
 }
