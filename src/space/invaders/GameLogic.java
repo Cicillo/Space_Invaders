@@ -54,8 +54,12 @@ public class GameLogic {
 
 	public void forEachEnemy(Consumer<Enemy> cons) {
 		for (int x = 0; x < GameConstants.ENEMIES_GRID_LENGTH; ++x) {
+			Enemy[] column = enemies[x];
 			for (int y = 0; y < GameConstants.ENEMIES_GRID_HEIGHT; ++y) {
-				cons.accept(enemies[x][y]);
+				Enemy enemy = column[y];
+				if (enemy != null) {
+					cons.accept(enemy);
+				}
 			}
 		}
 	}
