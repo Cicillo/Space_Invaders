@@ -87,4 +87,15 @@ public interface GameConstants {
 	 * is instantaneous and therefore does not depend on {@link #GAME_TPS}.
 	 */
 	Vec2D ALIEN_DOWN_JUMP = new Vec2D(0, (ALIEN_SIZE.getY() + ALIEN_SPACING.getY()) / 2);
+
+	/**
+	 * The speed at which projectiles move.
+	 */
+	double PROJECTILE_SPEED = 100 / GAME_TPS;
+
+	/**
+	 * The size of a normal projectile.
+	 */
+	Vec2D PROJECTILE_SIZE = new Vec2D(20, 20);
+
 }

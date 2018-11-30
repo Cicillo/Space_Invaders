@@ -5,24 +5,42 @@
  */
 package space.invaders;
 
+import javafx.scene.image.Image;
+
 /**
  *
  * @author Frankie
  */
 public enum ImageResources {
-	ALIEN1("./assets/images/alien1.png"),
-	ALIEN2("./assets/images/alien2.png"),
-	ALIEN3("./assets/images/aliens3.png"),
+
+	// 1. Enemy Sprites
+	ENEMY_NORMAL("./assets/images/enemies/enemy_normal.png"),
+	ENEMY_SUPER("./assets/images/enemies/enemy_super.png"),
+	ENEMY_LASER("./assets/images/enemies/enemy_laser.png"),
+	ENEMY_TANK("./assets/images/enemy_tank.png"),
+	ENEMY_TANK_NS("./assets/images/enemies/enemy_tank_noshield.png"),
+	ENEMY_SPINER("./assets/images/enemies/enemy_spiner.png"),
+	//
+	// 2. Player & Ally Sprites
+	//
 	SPACESHIP("./assets/images/spaceship.png"),
-	SHIELD("./assets/images/shield.png");
+	ALLIES("./assets/images/allies.png"),
+	//
+	// 3. Projectiles
+	//
+	PROJECTILE_NORMAL("./assets/images/projectiles/projectile_normal.png");
 
 	private final String url;
 
 	private ImageResources(String url) {
 		this.url = url;
 	}
-	
+
 	public String getURL() {
 		return url;
+	}
+
+	public Image getImage() {
+		return AssetManager.getImage(this);
 	}
 }
