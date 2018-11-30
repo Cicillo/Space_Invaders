@@ -5,7 +5,7 @@ package space.invaders;
  * @author Tomer Moran
  */
 public class Vec2D {
-	
+
 	public static final Vec2D ZERO = new Vec2D();
 
 	public static final Vec2D add(Vec2D vec, IntegerCoordinates coords) {
@@ -51,16 +51,24 @@ public class Vec2D {
 		return new Vec2D(this.x * k, this.y * k);
 	}
 
-	public Vec2D divide(double k) {
-		return new Vec2D(this.x / k, this.y / k);
-	}
-
 	public Vec2D scale(double kx, double ky) {
 		return new Vec2D(this.x * kx, this.y * ky);
 	}
 
+	public Vec2D scale(Vec2D vec) {
+		return new Vec2D(this.x * vec.x, this.y * vec.y);
+	}
+
+	public Vec2D divide(double k) {
+		return new Vec2D(this.x / k, this.y / k);
+	}
+
 	public Vec2D divide(double kx, double ky) {
 		return new Vec2D(this.x / kx, this.y / ky);
+	}
+
+	public Vec2D divide(Vec2D vec) {
+		return new Vec2D(this.x / vec.x, this.y / vec.y);
 	}
 
 	public double norm() {
