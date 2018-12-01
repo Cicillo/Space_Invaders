@@ -19,10 +19,10 @@ import space.invaders.enemies.LaserEnemy;
 public class LaserProjectile extends Projectile {
 
 	private static final Image LASER_IMAGE = ImageResources.PROJECTILE_LASER.getImage();
+	private static final Vec2D LASER_SIZE_CHANGE = new Vec2D(0, GameConstants.LASER_SPEED);
 
 	private long lifetime;
-	private double lowPositionY;
-
+	private RectBounds bounds;
 	private final LaserEnemy enemy;
 	private final AtomicReference<Vec2D> origin;
 
@@ -31,6 +31,7 @@ public class LaserProjectile extends Projectile {
 		this.enemy = enemy;
 		this.origin = origin;
 		this.lifetime = lifetime;
+		this.bounds = new RectBounds(Vec2D.ZERO, GameConstants.LASER_SIZE);
 	}
 
 	@Override
@@ -40,39 +41,39 @@ public class LaserProjectile extends Projectile {
 		}
 
 		// Update Y component
-		lowPositionY += GameConstants.LASER_SPEED;
+		bounds.enlarge(LASER_SIZE_CHANGE);
+
+		// Update X component
+		bounds.position(enemy.getPosition(origin.get())
+				.plus(GameConstants.ENEMY_SIZE.scale(0.5, 1))
+				.minus(GameConstants.LASER_SIZE.scale(0.5, 0)));
+
 		return false;
 	}
 
 	@Override
 	public void draw(GraphicsContext graphics) {
-		// Get position of laser
-		Vec2D pos = enemy.getPosition(origin.get())
-				.plus(GameConstants.ENEMY_SIZE.scale(0.5, 1))
-				.minus(GameConstants.LASER_SIZE.scale(0.5, 0));
-
-		double height = Math.max(0, lowPositionY - pos.getY());
-		graphics.drawImage(LASER_IMAGE, pos.getX(), pos.getY(), GameConstants.LASER_SIZE.getX(), height);
+		graphics.drawImage(LASER_IMAGE, bounds.getMinX(), bounds.getMinY(), bounds.getWidth(), bounds.getHeight());
 	}
 
 	@Override
 	public boolean collidesWith(double x, double y, double width, double height) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		return bounds.intersects(x, y, x + width, y + height);
 	}
 
 	@Override
-	public boolean collidesWith(Bounds bounds) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	public boolean collidesWith(Bounds b) {
+		return bounds.intersects(b);
 	}
 
 	@Override
-	public boolean collidesWith(RectBounds bounds) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	public boolean collidesWith(RectBounds b) {
+		return bounds.intersects(b);
 	}
 
 	@Override
 	public Enemy getCollidedEnemy(GameLogic logic) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		return null;
 	}
 
 }
