@@ -43,11 +43,11 @@ public class RectBounds {
 	}
 
 	public double getMaxX() {
-		return getMinX() + size.getX();
+		return position.getX() + size.getX();
 	}
 
 	public double getMaxY() {
-		return getMinX() + size.getY();
+		return position.getY() + size.getY();
 	}
 
 	public double getWidth() {
@@ -55,7 +55,7 @@ public class RectBounds {
 	}
 
 	public double getHeight() {
-		return size.getX();
+		return size.getY();
 	}
 
 	public void move(Vec2D delta) {
@@ -75,5 +75,10 @@ public class RectBounds {
 				&& maxY >= getMinY()
 				&& minX <= getMaxX()
 				&& minY <= getMaxY());
+	}
+	
+	@Override
+	public String toString() {
+		return String.format("{(%.1f,%.1f), (%.1f, %.1f)}", getMinX(), getMinY(), getMaxX(), getMaxY());
 	}
 }

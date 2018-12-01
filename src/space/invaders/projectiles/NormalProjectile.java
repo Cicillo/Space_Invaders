@@ -34,25 +34,29 @@ public class NormalProjectile extends Projectile {
 		this.image = image;
 	}
 
+	public RectBounds getBounds() {
+		return bounds;
+	}
+
 	@Override
-	public void tick() {
+	public boolean tick() {
 		bounds.move(velocity);
+		return bounds.getMinY() <= 0;
 	}
 
 	@Override
 	public void draw(GraphicsContext graphics) {
-		
 		graphics.drawImage(image, bounds.getMinX(), bounds.getMinY());
 	}
 
 	@Override
-	public boolean collidesWith(Bounds bounds) {
-		return bounds.intersects(bounds);
+	public boolean collidesWith(Bounds b) {
+		return bounds.intersects(b);
 	}
 
 	@Override
-	public boolean collidesWith(RectBounds bounds) {
-		return bounds.intersects(bounds);
+	public boolean collidesWith(RectBounds b) {
+		return bounds.intersects(b);
 	}
 
 	@Override
@@ -66,23 +70,16 @@ public class NormalProjectile extends Projectile {
 		Vec2D gridPosition = bounds.getPosition().minus(origin).divide(GameConstants.ENEMY_DELTA);
 		int gridX = (int) gridPosition.getX();
 		int gridY = (int) gridPosition.getY();
-		int lim = GameConstants.ENEMIES_GRID_HEIGHT;
 
-		// Check lower enemy
-		if (gridY + 1 < lim) {
-			Enemy enemy = logic.getEnemy(gridX, gridY + 1);
-			if (enemy != null && collidesWith(enemy.getBounds(origin))) {
-				return enemy;
+		// Check enemies near the detected grid cell
+		for (int i = 0; i <= 1; ++i) {
+			for (int j = 0; j <= 1; ++j) {
+				Enemy enemy = logic.getEnemy(gridX + i, gridY + j);
+				if (enemy != null && collidesWith(enemy.getBounds(origin))) {
+					return enemy;
+				}
 			}
 		}
-
-		if (gridY < lim) {
-			Enemy enemy = logic.getEnemy(gridX, gridY);
-			if (enemy != null && collidesWith(enemy.getBounds(origin))) {
-				return enemy;
-			}
-		}
-
 		return null;
 	}
 

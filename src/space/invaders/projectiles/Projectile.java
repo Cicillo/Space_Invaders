@@ -25,9 +25,13 @@ public abstract class Projectile {
 	}
 
 	/**
-	 * Ticks this projectile, updating the location or velocity as necessary.
+	 * Ticks this projectile, updating the location or velocity as necessary,
+	 * and returns whether or not this projectile should be removed.
+	 *
+	 * @return {@code true} if this projectile should be removed, {@code false}
+	 * otherwise.
 	 */
-	public abstract void tick();
+	public abstract boolean tick();
 
 	/**
 	 * Draws this projectile onto the given {@code GraphicsContext}.

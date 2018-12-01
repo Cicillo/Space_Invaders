@@ -15,12 +15,13 @@ import javafx.stage.Stage;
  */
 public class Main extends Application {
 
+	private GamePane pane;
 	private ScheduledFuture<?> gameTickTask;
 	private ScheduledFuture<?> renderTask;
 
 	@Override
 	public void start(Stage stage) {
-		GamePane pane = new GamePane();
+		pane = new GamePane();
 		Scene scene = new Scene(pane, GameConstants.SCREEN_SIZE.getX(), GameConstants.SCREEN_SIZE.getY());
 		pane.initialize();
 
@@ -32,8 +33,26 @@ public class Main extends Application {
 		int renderTick = (int) (1_000 / GameConstants.RENDER_FPS);
 		int gameTick = (int) (1_000_000 / GameConstants.GAME_TPS);
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
-		gameTickTask = executor.scheduleAtFixedRate(pane::tick, gameTick, gameTick, TimeUnit.MICROSECONDS);
-		renderTask = executor.scheduleAtFixedRate(() -> Platform.runLater(pane::drawCanvas), renderTick, renderTick, TimeUnit.MILLISECONDS);
+		gameTickTask = executor.scheduleAtFixedRate(this::tickGame, gameTick, gameTick, TimeUnit.MICROSECONDS);
+		renderTask = executor.scheduleAtFixedRate(this::tickRender, renderTick, renderTick, TimeUnit.MILLISECONDS);
+	}
+
+	private void tickGame() {
+		try {
+			pane.tick();
+		} catch (Exception ex) {
+			ex.printStackTrace(System.err);
+			throw new RuntimeException(ex);
+		}
+	}
+
+	private void tickRender() {
+		try {
+			Platform.runLater(pane::drawCanvas);
+		} catch (Exception ex) {
+			ex.printStackTrace(System.err);
+			throw new RuntimeException(ex);
+		}
 	}
 
 	@Override

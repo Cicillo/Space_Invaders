@@ -55,7 +55,7 @@ public abstract class Enemy {
 	 * @return the bounding box of this enemy.
 	 */
 	public RectBounds getBounds(Vec2D origin) {
-		return new RectBounds(origin, GameConstants.ENEMY_SIZE);
+		return new RectBounds(getPosition(origin), GameConstants.ENEMY_SIZE);
 	}
 
 	/**

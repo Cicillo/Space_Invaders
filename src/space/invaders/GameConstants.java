@@ -69,7 +69,7 @@ public interface GameConstants {
 	/**
 	 * Number of game ticks per second.
 	 */
-	double GAME_TPS = 100;
+	double GAME_TPS = 60;
 
 	/**
 	 * Number of rendering ticks per second.
@@ -102,7 +102,7 @@ public interface GameConstants {
 	 * The speed at which friendly (allied + player) projectiles move, in pixels
 	 * per second.
 	 */
-	double PROJECTILE_SPEED_FRIENDLY = -400 / GAME_TPS;
+	double PROJECTILE_SPEED_FRIENDLY = -600 / GAME_TPS;
 
 	/**
 	 * The size of a normal projectile.
