@@ -19,7 +19,7 @@ public class LaserEnemy extends Enemy {
 		return (long) ((10 + 5 * rand.nextDouble()) * GameConstants.GAME_TPS);
 	}
 
-	private long cooldownTimer = 60; // TODO
+	private long cooldownTimer = -1;
 
 	public LaserEnemy(IntegerCoordinates coords) {
 		super(ImageResources.ENEMY_LASER.getImage(), coords);
