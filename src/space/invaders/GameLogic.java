@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import space.invaders.enemies.DummyEnemy;
 import space.invaders.enemies.Enemy;
@@ -177,10 +178,51 @@ public class GameLogic {
 				// Let the enemy handle the collision & remove if needed
 				boolean remove = collided.onHit(proj);
 				if (remove) {
-					enemies.remove(collided.getCoordinates());
+					IntegerCoordinates coords = collided.getCoordinates();
+					enemies.remove(coords);
+
+					// Update leftmost enemy 
+					if (coords.getX() == leftmostEnemy) {
+						leftmostEnemy = findIndex(LEFTMOST).getX();
+					}
+
+					if (coords.getX() == rightmostEnemy) {
+						rightmostEnemy = findIndex(RIGHTMOST).getX();
+					}
+
+					if (coords.getY() == downmostEnemy) {
+						downmostEnemy = findIndex(DOWNMOST).getY();
+					}
 				}
 
 			}
 		}
 	}
+
+	private IntegerCoordinates findIndex(BiFunction<IntegerCoordinates, IntegerCoordinates, IntegerCoordinates> function) {
+		IntegerCoordinates coords = null;
+		for (IntegerCoordinates c : enemies.keySet()) {
+			if (coords == null) {
+				coords = c;
+				continue;
+			}
+
+			coords = function.apply(coords, c);
+		}
+
+		return coords;
+	}
+
+	private static final BiFunction<IntegerCoordinates, IntegerCoordinates, IntegerCoordinates> LEFTMOST = (a, b) -> {
+		return (a.getX() <= b.getX()) ? a : b;
+	};
+
+	private static final BiFunction<IntegerCoordinates, IntegerCoordinates, IntegerCoordinates> RIGHTMOST = (a, b) -> {
+		return (a.getX() >= b.getX()) ? a : b;
+	};
+
+	private static final BiFunction<IntegerCoordinates, IntegerCoordinates, IntegerCoordinates> DOWNMOST = (a, b) -> {
+		return (a.getY() >= b.getY()) ? a : b;
+	};
+
 }
