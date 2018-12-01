@@ -1,5 +1,7 @@
 package space.invaders;
 
+import java.awt.AWTException;
+import java.awt.Robot;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
@@ -8,8 +10,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import javafx.beans.value.ObservableDoubleValue;
+import javafx.scene.Scene;
+import space.invaders.enemies.DummyEnemy;
 import space.invaders.enemies.Enemy;
-import space.invaders.enemies.LaserEnemy;
 import space.invaders.enemies.SpinnerEnemy;
 import space.invaders.projectiles.NormalProjectile;
 import space.invaders.projectiles.Projectile;
@@ -32,6 +35,9 @@ public class GameLogic {
 	private int remainingLives;
 	private long frozenTicks;
 
+	private int enemiesKilled;
+	private volatile int gameState;
+
 	/**
 	 * The direction in which enemies move. Left is {@code true} while right is
 	 * {@code false}.
@@ -40,6 +46,9 @@ public class GameLogic {
 
 	private final AtomicReference<Vec2D> enemyPosition;
 
+	private Scene scene;
+	private final Robot robot;
+
 	public GameLogic(ObservableDoubleValue spaceshipPosition) {
 		this.random = new Random();
 		this.enemies = new ConcurrentHashMap<>();
@@ -47,8 +56,13 @@ public class GameLogic {
 		this.enemyProjectiles = ConcurrentHashMap.newKeySet();
 		this.spaceshipPosition = spaceshipPosition;
 		this.enemyPosition = new AtomicReference<>();
-
 		this.remainingLives = GameConstants.PLAYER_LIVES;
+
+		try {
+			robot = new Robot();
+		} catch (AWTException ex) {
+			throw new RuntimeException(ex);
+		}
 	}
 
 	public Random getRandom() {
@@ -57,6 +71,14 @@ public class GameLogic {
 
 	public boolean isFrozen() {
 		return frozenTicks > 0;
+	}
+
+	public boolean hasWon() {
+		return gameState == 1;
+	}
+
+	public boolean hasLost() {
+		return gameState == -1;
 	}
 
 	public ConcurrentHashMap<IntegerCoordinates, Enemy> getEnemies() {
@@ -112,12 +134,14 @@ public class GameLogic {
 		return enemyPosition.get().plus(GameConstants.ENEMY_DELTA.scale(gridX, gridY));
 	}
 
-	public void generateGame() {
+	public void generateGame(Scene scene) {
+		this.scene = scene;
+
 		// Create enemies
 		for (int x = 0; x < GameConstants.ENEMIES_GRID_LENGTH; ++x) {
 			for (int y = 0; y < GameConstants.ENEMIES_GRID_HEIGHT; ++y) {
 				IntegerCoordinates coords = new IntegerCoordinates(x, y);
-				enemies.put(coords, (x == 5 && y == 2) ? new SpinnerEnemy(coords) : new LaserEnemy(coords));
+				enemies.put(coords, (x == 5 && y == 2) ? new SpinnerEnemy(coords) : new DummyEnemy(coords));
 			}
 		}
 
@@ -134,6 +158,9 @@ public class GameLogic {
 	}
 
 	public void tickGame() {
+		if (gameState != 0)
+			return;
+
 		if (isFrozen()) {
 			--frozenTicks;
 			return;
@@ -153,6 +180,7 @@ public class GameLogic {
 		handleProjectileToProjectileCollision();
 		handleFriendlyProjectilesToEnemyCollision();
 		handleEnemyProjectilesToPlayerCollision();
+		handleEnemyToPlayerCollision();
 	}
 
 	private void moveEnemies() {
@@ -204,6 +232,13 @@ public class GameLogic {
 				if (remove) {
 					IntegerCoordinates coords = collided.getCoordinates();
 					enemies.remove(coords);
+
+					// Check for victory
+					++enemiesKilled;
+					if (enemiesKilled >= GameConstants.ENEMIES_COUNT) {
+						gameState = 1;
+						return;
+					}
 
 					// Update leftmost enemy 
 					if (coords.getX() == leftmostEnemy) {
@@ -258,17 +293,44 @@ public class GameLogic {
 		}
 	}
 
-	public void removePlayerLife() {
-		// Decrement life count
-		if (--remainingLives <= 0) {
-			// Game over
-			// TODO
-			System.exit(1);
+	private void handleEnemyToPlayerCollision() {
+		// Preliminary check
+		Vec2D pos = getEnemyPosition(0, downmostEnemy);
+		if (pos.getY() + GameConstants.ENEMY_SIZE.getY() < GameConstants.SPACESHIP_Y)
+			return;
+
+		// Check collision
+		RectBounds spaceshipBounds = new RectBounds(
+				new Vec2D(spaceshipPosition.get(), GameConstants.SPACESHIP_Y),
+				GameConstants.SPACESHIP_SIZE);
+		for (int x = 0; x < GameConstants.ENEMIES_GRID_LENGTH; ++x) {
+			IntegerCoordinates coords = new IntegerCoordinates(x, downmostEnemy);
+			Enemy e = enemies.get(coords);
+			if (e != null && e.getBounds(enemyPosition.get()).intersects(spaceshipBounds)) {
+				removePlayerLife(remainingLives);
+			}
 		}
+	}
+
+	public void removePlayerLife() {
+		removePlayerLife(1);
+	}
+
+	public void removePlayerLife(int qty) {
+		// Decrement life count
+		if ((remainingLives -= qty) <= 0) {
+			// Game over
+			gameState = -1;
+			return;
+		}
+
+		robot.mouseMove((int) (scene.getWindow().getX() + GameConstants.LEFT_GAME_BOUND),
+				(int) (scene.getWindow().getY() + scene.getHeight() / 2));
 
 		enemyProjectiles.clear();
 		friendlyProjectiles.clear();
 		frozenTicks = GameConstants.DEATH_FREEZE_TIME;
+
 	}
 
 	private IntegerCoordinates findIndex(BiFunction<IntegerCoordinates, IntegerCoordinates, IntegerCoordinates> function) {

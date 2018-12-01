@@ -41,22 +41,34 @@ public class Main extends Application {
 		try {
 			pane.tick();
 		} catch (Exception ex) {
-			ex.printStackTrace(System.err);
-			throw new RuntimeException(ex);
+			if (ex instanceof EndGameException) {
+				gameTickTask.cancel(true);
+				renderTask.cancel(true);
+			} else {
+				ex.printStackTrace(System.err);
+				throw new RuntimeException(ex);
+			}
 		}
 	}
 
 	private void tickRender() {
-		try {
-			Platform.runLater(pane::drawCanvas);
-		} catch (Exception ex) {
-			ex.printStackTrace(System.err);
-			throw new RuntimeException(ex);
-		}
+		Platform.runLater(() -> {
+			try {
+				pane.drawCanvas();
+			} catch (Exception ex) {
+				if (ex instanceof EndGameException) {
+					gameTickTask.cancel(true);
+					renderTask.cancel(true);
+				} else {
+					ex.printStackTrace(System.err);
+					throw new RuntimeException(ex);
+				}
+			}
+		});
 	}
 
 	@Override
-	public void stop() throws Exception {
+	public void stop() {
 		gameTickTask.cancel(true);
 		renderTask.cancel(true);
 		System.exit(0);

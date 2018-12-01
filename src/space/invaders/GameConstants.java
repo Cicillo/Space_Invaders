@@ -39,7 +39,7 @@ public interface GameConstants {
 	/**
 	 * Top bound of the game area. Defines the starting position of enemies.
 	 */
-	double TOP_GAME_BOUND = 120;
+	double TOP_GAME_BOUND = 400;
 
 	/**
 	 * Right bound of the game area. Enemies bounce when they reach this.
@@ -65,6 +65,11 @@ public interface GameConstants {
 	 * The number of enemies in a column.
 	 */
 	int ENEMIES_GRID_HEIGHT = 5;
+
+	/**
+	 * The total number of enemies to defeat.
+	 */
+	int ENEMIES_COUNT = ENEMIES_GRID_LENGTH * ENEMIES_GRID_HEIGHT;
 
 	/**
 	 * Number of game ticks per second.

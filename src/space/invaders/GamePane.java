@@ -1,9 +1,11 @@
 package space.invaders;
 
+import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -20,6 +22,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 import space.invaders.projectiles.NormalProjectile;
 
 /**
@@ -34,6 +37,7 @@ public class GamePane extends AnchorPane {
 	private final Label scoreLabel;
 	private final Label levelLabel;
 	private final Label highscoreLabel;
+	private final Label gameStatusLabel;
 	private final Rectangle spaceship;
 	private final GameLogic gameLogic;
 
@@ -50,12 +54,13 @@ public class GamePane extends AnchorPane {
 		this.scoreLabel = new Label("0");
 		this.levelLabel = new Label("1");
 		this.highscoreLabel = new Label("0");
+		this.gameStatusLabel = new Label("");
 		this.spaceship = new Rectangle(GameConstants.LEFT_GAME_BOUND, GameConstants.SPACESHIP_Y, GameConstants.SPACESHIP_SIZE.getX(), GameConstants.SPACESHIP_SIZE.getX());
 	}
 
 	public void initialize() {
 		// 1. Initialize game logic
-		gameLogic.generateGame();
+		gameLogic.generateGame(getScene());
 
 		// 2. Initialize GUI
 		Scene scene = getScene();
@@ -68,10 +73,16 @@ public class GamePane extends AnchorPane {
 		Label highscoreTextLabel = new Label("HIGH SCORE");
 		Label livesLabel = new Label("LIVES");
 
-		formatLabels(scoreTextLabel, levelTextLabel, highscoreTextLabel, scoreLabel, levelLabel, highscoreLabel, livesLabel);
+		formatLabels(scoreTextLabel, levelTextLabel, highscoreTextLabel, scoreLabel, levelLabel, highscoreLabel, livesLabel, gameStatusLabel);
 
 		AnchorPane.setLeftAnchor(livesLabel, GameConstants.LEFT_GAME_BOUND);
 		AnchorPane.setBottomAnchor(livesLabel, 3.0);
+
+		gameStatusLabel.setVisible(false);
+		gameStatusLabel.setAlignment(Pos.CENTER);
+		gameStatusLabel.setTextAlignment(TextAlignment.CENTER);
+		gameStatusLabel.prefWidthProperty().bind(scene.widthProperty());
+		gameStatusLabel.prefHeightProperty().bind(scene.heightProperty());
 
 		GridPane grid = new GridPane();
 		grid.getColumnConstraints().addAll(constr(HPos.LEFT), constr(HPos.CENTER), constr(HPos.RIGHT));
@@ -81,7 +92,7 @@ public class GamePane extends AnchorPane {
 		grid.addColumn(0, scoreTextLabel, scoreLabel);
 		grid.addColumn(1, levelTextLabel, levelLabel);
 		grid.addColumn(2, highscoreTextLabel, highscoreLabel);
-		getChildren().addAll(grid, canvas, spaceship, livesLabel);
+		getChildren().addAll(grid, canvas, spaceship, livesLabel, gameStatusLabel);
 
 		this.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
 
@@ -97,7 +108,14 @@ public class GamePane extends AnchorPane {
 	}
 
 	private void handleMouseMove(MouseEvent e) {
+		if (gameLogic.hasWon() || gameLogic.hasLost())
+			return;
+
 		double pos = e.getSceneX() - GameConstants.SPACESHIP_SIZE.getX() / 2;
+		if (gameLogic.isFrozen()) {
+			pos = GameConstants.LEFT_GAME_BOUND;
+		}
+
 		pos = Math.max(10, Math.min(GameConstants.SCREEN_SIZE.getX() - GameConstants.SPACESHIP_SIZE.getX(), pos));
 		spaceship.setX(pos);
 		spaceshipPosition.set(pos);
@@ -122,6 +140,19 @@ public class GamePane extends AnchorPane {
 	}
 
 	public void drawCanvas() {
+		// Stop rendering if the player won or lost
+		if (gameLogic.hasWon() || gameLogic.hasLost()) {
+			throw new EndGameException();
+		}
+
+		// Display death message
+		if (gameLogic.isFrozen()) {
+			gameStatusLabel.setVisible(true);
+			gameStatusLabel.setText("You died! " + gameLogic.getRemainingLives() + " lives left.");
+		} else {
+			gameStatusLabel.setVisible(false);
+		}
+
 		GraphicsContext graphics = canvas.getGraphicsContext2D();
 
 		// 1. Clear Canvas
@@ -158,6 +189,21 @@ public class GamePane extends AnchorPane {
 
 		// Tick game
 		gameLogic.tickGame();
+		if (gameLogic.hasWon()) {
+			Platform.runLater(() -> {
+				gameStatusLabel.setVisible(true);
+				gameStatusLabel.setText("You have won!");
+			});
+
+			throw new EndGameException();
+		} else if (gameLogic.hasLost()) {
+			Platform.runLater(() -> {
+				gameStatusLabel.setVisible(true);
+				gameStatusLabel.setText("You have lost!");
+			});
+
+			throw new EndGameException();
+		}
 	}
 
 	private static void formatLabels(Label... labels) {
