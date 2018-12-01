@@ -130,6 +130,31 @@ public interface GameConstants {
 	int TANK_CAPACITY = 2;
 
 	/**
+	 * The delay between two volleys of shots by a spinner enemy.
+	 */
+	long SPINNER_SHOOT_DELAY = (long) (0.75 * GAME_TPS);
+
+	/**
+	 * The number of volleys of shots by a spinner enemy.
+	 */
+	long SPINNER_SHOOT_COUNT = 5;
+
+	/**
+	 * The number of pellets shots by a spinner enemy.
+	 */
+	long SPINNER_PELLET_COUNT = 8;
+
+	/**
+	 * The max angle at which the spinner can shoot.
+	 */
+	double SPINNER_MAX_ANGLE = 7 * Math.PI / 8;
+
+	/**
+	 * The size of a pellet projectile shot by a spinner enemy.
+	 */
+	Vec2D SPINNER_PELLET_SIZE = new Vec2D(10, 10);
+
+	/**
 	 * Delay between player shoots.
 	 */
 	long SHOOT_DELAY = 750;
