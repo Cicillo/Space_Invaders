@@ -96,16 +96,22 @@ public interface GameConstants {
 	/**
 	 * The speed at which enemy projectiles move, in pixels per second.
 	 */
-	double PROJECTILE_SPEED = 100 / GAME_TPS;
+	double PROJECTILE_SPEED = 200 / GAME_TPS;
 
 	/**
-	 * The speed at which friendly (allied + player) projectiles move, in pixels per second.
+	 * The speed at which friendly (allied + player) projectiles move, in pixels
+	 * per second.
 	 */
-	double PROJECTILE_SPEED_FRIENDLY = -100 / GAME_TPS;
-	
+	double PROJECTILE_SPEED_FRIENDLY = -400 / GAME_TPS;
+
 	/**
 	 * The size of a normal projectile.
 	 */
-	Vec2D PROJECTILE_SIZE = new Vec2D(20, 20);
+	Vec2D PROJECTILE_SIZE = new Vec2D(7, 25);
+
+	/**
+	 * Delay between player shoots.
+	 */
+	long SHOOT_DELAY = 750;
 
 }

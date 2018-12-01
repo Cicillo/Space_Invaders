@@ -6,7 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -17,7 +17,6 @@ import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
-import space.invaders.enemies.Enemy;
 import space.invaders.projectiles.NormalProjectile;
 
 /**
@@ -34,9 +33,10 @@ public class GamePane extends AnchorPane {
 	private final Label highscoreLabel;
 	private final Rectangle spaceship;
 	private final GameLogic gameLogic;
-	private	long lastShotTime;
-	
-	
+
+	private long lastShotTime;
+	private volatile boolean mousePressed;
+
 	public GamePane() {
 		this.canvas = new Canvas();
 		this.gameLogic = new GameLogic();
@@ -75,28 +75,36 @@ public class GamePane extends AnchorPane {
 
 		this.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
 
-		scene.setOnMouseMoved(e -> {
-			double pos = e.getSceneX() - GameConstants.SPACESHIP_SIZE.getX() / 2;
-			spaceship.setX(Math.max(10, Math.min(GameConstants.SCREEN_SIZE.getX() - GameConstants.SPACESHIP_SIZE.getX(), pos)));
-		});
+		scene.setOnMouseMoved(this::handleMouseMove);
+		scene.setOnMouseDragged(this::handleMouseMove);
 
 		scene.setOnMousePressed(e -> {
-			//To prevent spam, there will be a set amount of time before the next projectile is created
-			long deltaT = System.currentTimeMillis() - lastShotTime;
-
-			if (deltaT < 750) {
-				return;
-			}
-			lastShotTime = System.currentTimeMillis();
-			//click and hold for more than 0.75 seconds. Every 0.75 seconds, timer restarts, new projectile is created
-			
-			Vec2D position = new Vec2D(spaceship.getX() + spaceship.getWidth() / 2, spaceship.getY() + spaceship.getHeight() / 2);
-			RectBounds projectileBounds = new RectBounds(position, GameConstants.PROJECTILE_SIZE);
-			Vec2D velocity = new Vec2D(0, GameConstants.PROJECTILE_SPEED_FRIENDLY);
-			NormalProjectile playerProjectile = new NormalProjectile(true, projectileBounds, velocity, NormalProjectile.DEFAULT_IMAGE);
-			gameLogic.addProjectile(playerProjectile);
+			mousePressed = true;
 		});
-}
+		scene.setOnMouseReleased(e -> {
+			mousePressed = false;
+		});
+	}
+
+	private void handleMouseMove(MouseEvent e) {
+		double pos = e.getSceneX() - GameConstants.SPACESHIP_SIZE.getX() / 2;
+		spaceship.setX(Math.max(10, Math.min(GameConstants.SCREEN_SIZE.getX() - GameConstants.SPACESHIP_SIZE.getX(), pos)));
+	}
+
+	private void handleShoot(MouseEvent e) {
+		// To prevent spam, there must be a certain delay between shots
+		long deltaT = System.currentTimeMillis() - lastShotTime;
+		if (deltaT < GameConstants.SHOOT_DELAY) {
+			return;
+		}
+
+		lastShotTime = System.currentTimeMillis();
+		Vec2D position = new Vec2D(spaceship.getX() + spaceship.getWidth() / 2, spaceship.getY() - GameConstants.PROJECTILE_SIZE.getY() / 2);
+		RectBounds bounds = new RectBounds(position, GameConstants.PROJECTILE_SIZE);
+		Vec2D velocity = new Vec2D(0, GameConstants.PROJECTILE_SPEED_FRIENDLY);
+		NormalProjectile proj = new NormalProjectile(true, bounds, velocity, NormalProjectile.DEFAULT_IMAGE);
+		gameLogic.addProjectile(proj);
+	}
 
 	public void drawCanvas() {
 		GraphicsContext graphics = canvas.getGraphicsContext2D();
@@ -112,17 +120,20 @@ public class GamePane extends AnchorPane {
 		});
 
 		// 3. Draw projectiles
+		gameLogic.forEachProjectile(proj -> proj.draw(graphics));
 	}
 
-	private static final double GAME_AREA_WIDTH = GameConstants.RIGHT_GAME_BOUND - GameConstants.LEFT_GAME_BOUND;
-	private static final double GAME_AREA_HEIGHT = GameConstants.BOTTOM_GAME_BOUND - GameConstants.TOP_GAME_BOUND;
-
 	private void clearCanvas(GraphicsContext graphics) {
-		Vec2D pos = GameConstants.START_ENEMIES_POSITION;
-		graphics.clearRect(pos.getX(), pos.getY(), GAME_AREA_WIDTH, GAME_AREA_HEIGHT);
+		graphics.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 	}
 
 	public void tick() {
+		// Tick spaceship
+		if (mousePressed) {
+			handleShoot(null);
+		}
+
+		// Tick game
 		gameLogic.tickGame();
 	}
 

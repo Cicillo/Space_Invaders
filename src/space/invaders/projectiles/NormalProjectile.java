@@ -41,6 +41,7 @@ public class NormalProjectile extends Projectile {
 
 	@Override
 	public void draw(GraphicsContext graphics) {
+		
 		graphics.drawImage(image, bounds.getMinX(), bounds.getMinY());
 	}
 

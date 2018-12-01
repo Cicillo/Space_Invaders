@@ -64,6 +64,11 @@ public class GameLogic {
 		}
 	}
 
+	public void forEachProjectile(Consumer<Projectile> cons) {
+		friendlyProjectiles.forEach(cons);
+		enemyProjectiles.forEach(cons);
+	}
+	
 	public Set<Projectile> getFriendlyProjectiles() {
 		return friendlyProjectiles;
 	}
