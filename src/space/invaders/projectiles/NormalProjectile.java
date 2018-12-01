@@ -64,6 +64,10 @@ public class NormalProjectile extends Projectile {
 		return bounds.intersects(x, y, x + width, y + height);
 	}
 
+	public boolean collidesWith(NormalProjectile proj) {
+		return bounds.intersects(proj.bounds);
+	}
+
 	@Override
 	public Enemy getCollidedEnemy(GameLogic logic) {
 		Vec2D origin = logic.getEnemyPosition();
