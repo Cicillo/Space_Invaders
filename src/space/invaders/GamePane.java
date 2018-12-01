@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -17,6 +18,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import space.invaders.enemies.Enemy;
+import space.invaders.projectiles.NormalProjectile;
 
 /**
  *
@@ -31,9 +33,10 @@ public class GamePane extends AnchorPane {
 	private final Label levelLabel;
 	private final Label highscoreLabel;
 	private final Rectangle spaceship;
-
 	private final GameLogic gameLogic;
-
+	private	long lastShotTime;
+	
+	
 	public GamePane() {
 		this.canvas = new Canvas();
 		this.gameLogic = new GameLogic();
@@ -76,7 +79,24 @@ public class GamePane extends AnchorPane {
 			double pos = e.getSceneX() - GameConstants.SPACESHIP_SIZE.getX() / 2;
 			spaceship.setX(Math.max(10, Math.min(GameConstants.SCREEN_SIZE.getX() - GameConstants.SPACESHIP_SIZE.getX(), pos)));
 		});
-	}
+
+		scene.setOnMousePressed(e -> {
+			//To prevent spam, there will be a set amount of time before the next projectile is created
+			long deltaT = System.currentTimeMillis() - lastShotTime;
+
+			if (deltaT < 750) {
+				return;
+			}
+			lastShotTime = System.currentTimeMillis();
+			//click and hold for more than 0.75 seconds. Every 0.75 seconds, timer restarts, new projectile is created
+			
+			Vec2D position = new Vec2D(spaceship.getX() + spaceship.getWidth() / 2, spaceship.getY() + spaceship.getHeight() / 2);
+			RectBounds projectileBounds = new RectBounds(position, GameConstants.PROJECTILE_SIZE);
+			Vec2D velocity = new Vec2D(0, GameConstants.PROJECTILE_SPEED_FRIENDLY);
+			NormalProjectile playerProjectile = new NormalProjectile(true, projectileBounds, velocity, NormalProjectile.DEFAULT_IMAGE);
+			gameLogic.addProjectile(playerProjectile);
+		});
+}
 
 	public void drawCanvas() {
 		GraphicsContext graphics = canvas.getGraphicsContext2D();
@@ -86,10 +106,10 @@ public class GamePane extends AnchorPane {
 
 		// 2. Draw Enemies
 		graphics.setFill(Color.RED);
-		for (Enemy enemy : gameLogic.getEnemies()) {
-			Vec2D pos = enemy.getPosition(gameLogic.getEnemyPosition());
+		gameLogic.forEachEnemy(e -> {
+			Vec2D pos = e.getPosition(gameLogic.getEnemyPosition());
 			graphics.fillRect(pos.getX(), pos.getY(), GameConstants.ENEMY_SIZE.getX(), GameConstants.ENEMY_SIZE.getY());
-		}
+		});
 
 		// 3. Draw projectiles
 	}

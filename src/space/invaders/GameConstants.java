@@ -94,10 +94,15 @@ public interface GameConstants {
 	Vec2D ENEMY_DOWN_JUMP = new Vec2D(0, (ENEMY_SIZE.getY() + ENEMY_SPACING.getY()) / 2);
 
 	/**
-	 * The speed at which projectiles move, in pixels per second.
+	 * The speed at which enemy projectiles move, in pixels per second.
 	 */
 	double PROJECTILE_SPEED = 100 / GAME_TPS;
 
+	/**
+	 * The speed at which friendly (allied + player) projectiles move, in pixels per second.
+	 */
+	double PROJECTILE_SPEED_FRIENDLY = -100 / GAME_TPS;
+	
 	/**
 	 * The size of a normal projectile.
 	 */
