@@ -39,7 +39,7 @@ public interface GameConstants {
 	/**
 	 * Top bound of the game area. Defines the starting position of enemies.
 	 */
-	double TOP_GAME_BOUND = 400;
+	double TOP_GAME_BOUND = 120;
 
 	/**
 	 * Right bound of the game area. Enemies bounce when they reach this.
