@@ -13,7 +13,7 @@ public class RectBounds {
 	}
 
 	private Vec2D position;
-	private final Vec2D size;
+	private Vec2D size;
 
 	public RectBounds(Vec2D position, Vec2D size) {
 		this.position = position;
@@ -62,6 +62,10 @@ public class RectBounds {
 		this.position = position.plus(delta);
 	}
 
+	public void enlarge(Vec2D delta) {
+		this.size = size.plus(delta);
+	}
+
 	public boolean intersects(RectBounds bounds) {
 		return intersects(bounds.getMinX(), bounds.getMinY(), bounds.getMaxX(), bounds.getMaxY());
 	}
@@ -76,7 +80,7 @@ public class RectBounds {
 				&& minX <= getMaxX()
 				&& minY <= getMaxY());
 	}
-	
+
 	@Override
 	public String toString() {
 		return String.format("{(%.1f,%.1f), (%.1f, %.1f)}", getMinX(), getMinY(), getMaxX(), getMaxY());
