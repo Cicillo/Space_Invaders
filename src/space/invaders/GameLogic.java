@@ -158,11 +158,10 @@ public class GameLogic {
 		for (Iterator<Projectile> it = friendlyProjectiles.iterator(); it.hasNext();) {
 			Projectile proj = it.next();
 
-			forEachEnemy(e -> {
-				if (proj.collidesWith(e, enemyPosition)) {
-					// TODO
-				}
-			});
+			Enemy collided = proj.getCollidedEnemy(this);
+			if (collided != null) {
+				boolean remove = collided.onHit(proj);
+			}
 		}
 	}
 }

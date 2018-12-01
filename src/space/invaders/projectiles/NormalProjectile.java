@@ -4,9 +4,11 @@ import javafx.geometry.Bounds;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import space.invaders.GameConstants;
+import space.invaders.GameLogic;
 import space.invaders.ImageResources;
 import space.invaders.RectBounds;
 import space.invaders.Vec2D;
+import space.invaders.enemies.Enemy;
 
 /**
  *
@@ -55,6 +57,32 @@ public class NormalProjectile extends Projectile {
 	@Override
 	public boolean collidesWith(double x, double y, double width, double height) {
 		return bounds.intersects(x, y, x + width, y + height);
+	}
+
+	@Override
+	public Enemy getCollidedEnemy(GameLogic logic) {
+		Vec2D origin = logic.getEnemyPosition();
+		Vec2D gridPosition = bounds.getPosition().minus(origin).divide(GameConstants.ENEMY_DELTA);
+		int gridX = (int) gridPosition.getX();
+		int gridY = (int) gridPosition.getY();
+		int lim = GameConstants.ENEMIES_GRID_HEIGHT;
+
+		// Check lower enemy
+		if (gridY + 1 < lim) {
+			Enemy enemy = logic.getEnemy(gridX, gridY + 1);
+			if (enemy != null && collidesWith(enemy.getBounds(origin))) {
+				return enemy;
+			}
+		}
+
+		if (gridY < lim) {
+			Enemy enemy = logic.getEnemy(gridX, gridY);
+			if (enemy != null && collidesWith(enemy.getBounds(origin))) {
+				return enemy;
+			}
+		}
+
+		return null;
 	}
 
 }

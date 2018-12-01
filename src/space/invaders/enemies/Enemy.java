@@ -4,6 +4,7 @@ import javafx.scene.image.Image;
 import space.invaders.GameConstants;
 import space.invaders.GameLogic;
 import space.invaders.IntegerCoordinates;
+import space.invaders.RectBounds;
 import space.invaders.Vec2D;
 import space.invaders.projectiles.Projectile;
 
@@ -40,11 +41,21 @@ public abstract class Enemy {
 	/**
 	 * Returns the position of this enemy.
 	 *
-	 * @param origin the position of the top-left enemy.
+	 * @param origin the position of the origin enemy.
 	 * @return the position of this enemy.
 	 */
 	public Vec2D getPosition(Vec2D origin) {
 		return origin.plus(GameConstants.ENEMY_DELTA.scale(coords.getX(), coords.getY()));
+	}
+
+	/**
+	 * Returns the bounds of this enemy.
+	 *
+	 * @param origin the position of the origin enemy.
+	 * @return the bounding box of this enemy.
+	 */
+	public RectBounds getBounds(Vec2D origin) {
+		return new RectBounds(origin, GameConstants.ENEMY_SIZE);
 	}
 
 	/**

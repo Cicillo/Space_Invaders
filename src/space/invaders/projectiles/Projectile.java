@@ -2,7 +2,9 @@ package space.invaders.projectiles;
 
 import javafx.geometry.Bounds;
 import javafx.scene.canvas.GraphicsContext;
+import space.invaders.GameLogic;
 import space.invaders.RectBounds;
+import space.invaders.enemies.Enemy;
 
 public abstract class Projectile {
 
@@ -64,4 +66,13 @@ public abstract class Projectile {
 	 * @return {@code true} if there is a collision, {@code false} otherwise.
 	 */
 	public abstract boolean collidesWith(RectBounds bounds);
+
+	/**
+	 * Returns the enemy with which this projectile is currently colliding with,
+	 * or {@code null} if none.
+	 *
+	 * @param logic the game logic instance.
+	 * @return the collided enemy, or {@code null} if none.
+	 */
+	public abstract Enemy getCollidedEnemy(GameLogic logic);
 }
