@@ -9,7 +9,7 @@ public interface GameConstants {
 	/**
 	 * The size of the screen.
 	 */
-	Vec2D SCREEN_SIZE = new Vec2D(1200, 900);
+	Vec2D SCREEN_SIZE = new Vec2D(1200, 1000);
 
 	/**
 	 * The size of an enemy.
@@ -49,7 +49,7 @@ public interface GameConstants {
 	/**
 	 * Bottom bound of the game area. This is where the spaceship moves around.
 	 */
-	double BOTTOM_GAME_BOUND = SCREEN_SIZE.getY() - 50;
+	double BOTTOM_GAME_BOUND = SCREEN_SIZE.getY() - 120;
 
 	/**
 	 * The Y component of the spaceship.
@@ -159,4 +159,13 @@ public interface GameConstants {
 	 */
 	long SHOOT_DELAY = 750;
 
+	/**
+	 * How many lives the player starts with.
+	 */
+	int PLAYER_LIVES = 3;
+
+	/**
+	 * The time to freeze the game for when the player loses a life, in ticks.
+	 */
+	long DEATH_FREEZE_TIME = (long) (5 * GAME_TPS);
 }

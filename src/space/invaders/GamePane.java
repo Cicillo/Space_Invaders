@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
@@ -65,8 +66,12 @@ public class GamePane extends AnchorPane {
 		Label levelTextLabel = new Label("LEVEL");
 		Label scoreTextLabel = new Label("SCORE");
 		Label highscoreTextLabel = new Label("HIGH SCORE");
+		Label livesLabel = new Label("LIVES");
 
-		formatLabels(scoreTextLabel, levelTextLabel, highscoreTextLabel, scoreLabel, levelLabel, highscoreLabel);
+		formatLabels(scoreTextLabel, levelTextLabel, highscoreTextLabel, scoreLabel, levelLabel, highscoreLabel, livesLabel);
+
+		AnchorPane.setLeftAnchor(livesLabel, GameConstants.LEFT_GAME_BOUND);
+		AnchorPane.setBottomAnchor(livesLabel, 3.0);
 
 		GridPane grid = new GridPane();
 		grid.getColumnConstraints().addAll(constr(HPos.LEFT), constr(HPos.CENTER), constr(HPos.RIGHT));
@@ -76,7 +81,7 @@ public class GamePane extends AnchorPane {
 		grid.addColumn(0, scoreTextLabel, scoreLabel);
 		grid.addColumn(1, levelTextLabel, levelLabel);
 		grid.addColumn(2, highscoreTextLabel, highscoreLabel);
-		getChildren().addAll(grid, canvas, spaceship);
+		getChildren().addAll(grid, canvas, spaceship, livesLabel);
 
 		this.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
 
@@ -99,6 +104,9 @@ public class GamePane extends AnchorPane {
 	}
 
 	private void handleShoot(MouseEvent e) {
+		if (gameLogic.isFrozen())
+			return;
+
 		// To prevent spam, there must be a certain delay between shots
 		long deltaT = System.currentTimeMillis() - lastShotTime;
 		if (deltaT < GameConstants.SHOOT_DELAY) {
@@ -127,6 +135,15 @@ public class GamePane extends AnchorPane {
 
 		// 3. Draw projectiles
 		gameLogic.forEachProjectile(proj -> proj.draw(graphics));
+
+		// 4. Draw life icons
+		Image image = ImageResources.SPACESHIP_ICON.getImage();
+		double x = 150;
+		double y = GameConstants.BOTTOM_GAME_BOUND + 95;
+		for (int i = 0; i < gameLogic.getRemainingLives(); ++i) {
+			graphics.drawImage(image, x, y);
+			x += 50;
+		}
 	}
 
 	private void clearCanvas(GraphicsContext graphics) {

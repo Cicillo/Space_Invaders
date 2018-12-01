@@ -26,6 +26,7 @@ public enum ImageResources {
 	// 2. Player & Ally Sprites
 	//
 	SPACESHIP("images/spaceship.png"),
+	SPACESHIP_ICON("images/dummy_spaceship.png"),
 	ALLIES("images/allies.png"),
 	//
 	// 3. Projectiles

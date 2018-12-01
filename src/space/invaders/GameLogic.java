@@ -30,6 +30,7 @@ public class GameLogic {
 	private int rightmostEnemy;
 	private int downmostEnemy;
 	private int remainingLives;
+	private long frozenTicks;
 
 	/**
 	 * The direction in which enemies move. Left is {@code true} while right is
@@ -37,7 +38,7 @@ public class GameLogic {
 	 */
 	private boolean enemyMovementDirection;
 
-	private AtomicReference<Vec2D> enemyPosition;
+	private final AtomicReference<Vec2D> enemyPosition;
 
 	public GameLogic(ObservableDoubleValue spaceshipPosition) {
 		this.random = new Random();
@@ -46,10 +47,16 @@ public class GameLogic {
 		this.enemyProjectiles = ConcurrentHashMap.newKeySet();
 		this.spaceshipPosition = spaceshipPosition;
 		this.enemyPosition = new AtomicReference<>();
+
+		this.remainingLives = GameConstants.PLAYER_LIVES;
 	}
 
 	public Random getRandom() {
 		return random;
+	}
+
+	public boolean isFrozen() {
+		return frozenTicks > 0;
 	}
 
 	public ConcurrentHashMap<IntegerCoordinates, Enemy> getEnemies() {
@@ -127,6 +134,11 @@ public class GameLogic {
 	}
 
 	public void tickGame() {
+		if (isFrozen()) {
+			--frozenTicks;
+			return;
+		}
+
 		// 1. Move the enemies around
 		moveEnemies();
 
@@ -234,12 +246,29 @@ public class GameLogic {
 	private void handleEnemyProjectilesToPlayerCollision() {
 		RectBounds spaceshipBounds = new RectBounds(new Vec2D(spaceshipPosition.get(), GameConstants.SPACESHIP_Y), GameConstants.SPACESHIP_SIZE);
 		for (Iterator<Projectile> it = enemyProjectiles.iterator(); it.hasNext();) {
+			// Get enemy projectile
 			Projectile proj = it.next();
+
+			// Check for collision
 			if (proj.collidesWith(spaceshipBounds)) {
+				// Remove projectile & remove player life
 				it.remove();
-				System.out.println("dead!");
+				removePlayerLife();
 			}
 		}
+	}
+
+	public void removePlayerLife() {
+		// Decrement life count
+		if (--remainingLives <= 0) {
+			// Game over
+			// TODO
+			System.exit(1);
+		}
+
+		enemyProjectiles.clear();
+		friendlyProjectiles.clear();
+		frozenTicks = GameConstants.DEATH_FREEZE_TIME;
 	}
 
 	private IntegerCoordinates findIndex(BiFunction<IntegerCoordinates, IntegerCoordinates, IntegerCoordinates> function) {
