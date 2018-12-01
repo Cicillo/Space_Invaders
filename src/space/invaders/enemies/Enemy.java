@@ -14,8 +14,8 @@ import space.invaders.projectiles.Projectile;
  */
 public abstract class Enemy {
 
-	protected Image image;
 	protected boolean alive;
+	protected volatile Image image;
 	private final IntegerCoordinates coords;
 
 	public Enemy(Image image, IntegerCoordinates coords) {

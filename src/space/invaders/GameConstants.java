@@ -125,6 +125,11 @@ public interface GameConstants {
 	long LASER_LIFETIME = (long) (3 * GAME_TPS);
 
 	/**
+	 * The number of hits the enemy tank's shield can take before breaking.
+	 */
+	int TANK_CAPACITY = 2;
+
+	/**
 	 * Delay between player shoots.
 	 */
 	long SHOOT_DELAY = 750;

@@ -9,7 +9,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import javafx.beans.value.ObservableDoubleValue;
 import space.invaders.enemies.Enemy;
-import space.invaders.enemies.LaserEnemy;
+import space.invaders.enemies.TankEnemy;
 import space.invaders.projectiles.Projectile;
 
 /**
@@ -108,7 +108,7 @@ public class GameLogic {
 		for (int x = 0; x < GameConstants.ENEMIES_GRID_LENGTH; ++x) {
 			for (int y = 0; y < GameConstants.ENEMIES_GRID_HEIGHT; ++y) {
 				IntegerCoordinates coords = new IntegerCoordinates(x, y);
-				enemies.put(coords, new LaserEnemy(coords));
+				enemies.put(coords, new TankEnemy(coords));
 			}
 		}
 
