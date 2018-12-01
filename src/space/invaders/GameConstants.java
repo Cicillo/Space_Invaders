@@ -110,9 +110,9 @@ public interface GameConstants {
 	Vec2D PROJECTILE_SIZE = new Vec2D(7, 25);
 
 	/**
-	 * The size of a laser projectile. The y component does not matter.
+	 * The initial size of a laser projectile.
 	 */
-	Vec2D LASER_SIZE = new Vec2D(20, Double.MAX_VALUE);
+	Vec2D LASER_SIZE = new Vec2D(20, 0);
 
 	/**
 	 * The vertical speed of the laser, in pixels per tick.
@@ -142,12 +142,12 @@ public interface GameConstants {
 	/**
 	 * The number of pellets shots by a spinner enemy.
 	 */
-	long SPINNER_PELLET_COUNT = 8;
+	long SPINNER_PELLET_COUNT = 9;
 
 	/**
 	 * The max angle at which the spinner can shoot.
 	 */
-	double SPINNER_MAX_ANGLE = 7 * Math.PI / 8;
+	double SPINNER_MAX_ANGLE = 5 * Math.PI / 12;
 
 	/**
 	 * The size of a pellet projectile shot by a spinner enemy.

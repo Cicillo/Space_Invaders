@@ -52,7 +52,6 @@ public class SpinnerEnemy extends Enemy {
 		}
 
 		shootingTimer = 1 + (GameConstants.SPINNER_SHOOT_COUNT * GameConstants.SPINNER_SHOOT_DELAY);
-		System.out.println("about to shoot");
 	}
 
 	private void shoot(GameLogic logic) {
@@ -72,10 +71,9 @@ public class SpinnerEnemy extends Enemy {
 
 		Vec2D position = getPosition(logic.getEnemyPosition());
 
-		System.out.println("pew!");
 		// Shoot pellets
-		double slope = 2 * GameConstants.SPINNER_MAX_ANGLE / (GameConstants.SPINNER_PELLET_COUNT-1);
-		double offset = (GameConstants.SPINNER_MAX_ANGLE - Math.PI);
+		double slope = 2 * GameConstants.SPINNER_MAX_ANGLE / (GameConstants.SPINNER_PELLET_COUNT - 1);
+		double offset = -(GameConstants.SPINNER_MAX_ANGLE + Math.PI / 2);
 		for (int i = 0; i < GameConstants.SPINNER_PELLET_COUNT; ++i) {
 			// Compute angle
 			double angle = offset + (i * slope);

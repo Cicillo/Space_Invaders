@@ -62,6 +62,10 @@ public class RectBounds {
 		this.position = position.plus(delta);
 	}
 
+	public void position(Vec2D pos) {
+		this.position = pos;
+	}
+
 	public void enlarge(Vec2D delta) {
 		this.size = size.plus(delta);
 	}
