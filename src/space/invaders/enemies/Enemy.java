@@ -15,11 +15,21 @@ import space.invaders.projectiles.Projectile;
 public abstract class Enemy {
 
 	protected Image image;
+	protected boolean alive;
 	private final IntegerCoordinates coords;
 
 	public Enemy(Image image, IntegerCoordinates coords) {
+		this.alive = true;
 		this.image = image;
 		this.coords = coords;
+	}
+
+	/**
+	 *
+	 * @return {@code true} if this enemy is alive, {@code false} otherwise.
+	 */
+	public boolean isAlive() {
+		return alive;
 	}
 
 	/**

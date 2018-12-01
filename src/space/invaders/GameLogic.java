@@ -1,14 +1,15 @@
 package space.invaders;
 
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import space.invaders.enemies.DummyEnemy;
+import javafx.beans.value.ObservableDoubleValue;
 import space.invaders.enemies.Enemy;
+import space.invaders.enemies.LaserEnemy;
 import space.invaders.projectiles.Projectile;
 
 /**
@@ -21,6 +22,7 @@ public class GameLogic {
 	private final ConcurrentHashMap<IntegerCoordinates, Enemy> enemies;
 	private final Set<Projectile> friendlyProjectiles;
 	private final Set<Projectile> enemyProjectiles;
+	private final ObservableDoubleValue spaceshipPosition;
 
 	private int leftmostEnemy;
 	private int rightmostEnemy;
@@ -33,13 +35,15 @@ public class GameLogic {
 	 */
 	private boolean enemyMovementDirection;
 
-	private volatile Vec2D enemyPosition;
+	private AtomicReference<Vec2D> enemyPosition;
 
-	public GameLogic() {
+	public GameLogic(ObservableDoubleValue spaceshipPosition) {
 		this.random = new Random();
 		this.enemies = new ConcurrentHashMap<>();
-		this.friendlyProjectiles = new HashSet<>();
-		this.enemyProjectiles = new HashSet<>();
+		this.friendlyProjectiles = ConcurrentHashMap.newKeySet();
+		this.enemyProjectiles = ConcurrentHashMap.newKeySet();
+		this.spaceshipPosition = spaceshipPosition;
+		this.enemyPosition = new AtomicReference<>();
 	}
 
 	public Random getRandom() {
@@ -88,11 +92,15 @@ public class GameLogic {
 	}
 
 	public Vec2D getEnemyPosition() {
+		return enemyPosition.get();
+	}
+
+	public AtomicReference<Vec2D> getEnemyPositionRef() {
 		return enemyPosition;
 	}
 
 	public Vec2D getEnemyPosition(int gridX, int gridY) {
-		return enemyPosition.plus(GameConstants.ENEMY_DELTA.scale(gridX, gridY));
+		return enemyPosition.get().plus(GameConstants.ENEMY_DELTA.scale(gridX, gridY));
 	}
 
 	public void generateGame() {
@@ -100,7 +108,7 @@ public class GameLogic {
 		for (int x = 0; x < GameConstants.ENEMIES_GRID_LENGTH; ++x) {
 			for (int y = 0; y < GameConstants.ENEMIES_GRID_HEIGHT; ++y) {
 				IntegerCoordinates coords = new IntegerCoordinates(x, y);
-				enemies.put(coords, new DummyEnemy(coords));
+				enemies.put(coords, new LaserEnemy(coords));
 			}
 		}
 
@@ -108,7 +116,7 @@ public class GameLogic {
 		enemyMovementDirection = true;
 
 		// Initialize start position
-		enemyPosition = GameConstants.START_ENEMIES_POSITION;
+		enemyPosition.set(GameConstants.START_ENEMIES_POSITION);
 
 		// Initialize index pointers
 		leftmostEnemy = 0;
@@ -136,7 +144,7 @@ public class GameLogic {
 		if (shouldEnemiesJumpDown()) {
 
 			// Move down
-			this.enemyPosition = enemyPosition.plus(GameConstants.ENEMY_DOWN_JUMP);
+			this.enemyPosition.set(enemyPosition.get().plus(GameConstants.ENEMY_DOWN_JUMP));
 
 			// Invert direction
 			this.enemyMovementDirection = !enemyMovementDirection;
@@ -145,7 +153,7 @@ public class GameLogic {
 
 		// Move right or left
 		Vec2D move = GameConstants.ENEMY_MOVEMENT_SPEED;
-		this.enemyPosition = (enemyMovementDirection) ? enemyPosition.plus(move) : enemyPosition.minus(move);
+		this.enemyPosition.set((enemyMovementDirection) ? enemyPosition.get().plus(move) : enemyPosition.get().minus(move));
 	}
 
 	private boolean shouldEnemiesJumpDown() {
@@ -195,6 +203,16 @@ public class GameLogic {
 					}
 				}
 
+			}
+		}
+	}
+
+	private void handleEnemyProjectilesToPlayerCollision() {
+		RectBounds spaceshipBounds = new RectBounds(new Vec2D(spaceshipPosition.get(), GameConstants.SPACESHIP_Y), GameConstants.SPACESHIP_SIZE);
+		for (Iterator<Projectile> it = enemyProjectiles.iterator(); it.hasNext();) {
+			Projectile proj = it.next();
+			if (proj.collidesWith(spaceshipBounds)) {
+				System.exit(1);
 			}
 		}
 	}

@@ -1,5 +1,7 @@
 package space.invaders;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -36,10 +38,13 @@ public class GamePane extends AnchorPane {
 
 	private long lastShotTime;
 	private volatile boolean mousePressed;
+	private volatile DoubleProperty spaceshipPosition;
 
 	public GamePane() {
+		this.spaceshipPosition = new SimpleDoubleProperty();
+
 		this.canvas = new Canvas();
-		this.gameLogic = new GameLogic();
+		this.gameLogic = new GameLogic(spaceshipPosition);
 
 		this.scoreLabel = new Label("0");
 		this.levelLabel = new Label("1");
@@ -88,7 +93,9 @@ public class GamePane extends AnchorPane {
 
 	private void handleMouseMove(MouseEvent e) {
 		double pos = e.getSceneX() - GameConstants.SPACESHIP_SIZE.getX() / 2;
-		spaceship.setX(Math.max(10, Math.min(GameConstants.SCREEN_SIZE.getX() - GameConstants.SPACESHIP_SIZE.getX(), pos)));
+		pos = Math.max(10, Math.min(GameConstants.SCREEN_SIZE.getX() - GameConstants.SPACESHIP_SIZE.getX(), pos));
+		spaceship.setX(pos);
+		spaceshipPosition.set(pos);
 	}
 
 	private void handleShoot(MouseEvent e) {
@@ -113,10 +120,9 @@ public class GamePane extends AnchorPane {
 		clearCanvas(graphics);
 
 		// 2. Draw Enemies
-		graphics.setFill(Color.RED);
 		gameLogic.forEachEnemy(e -> {
 			Vec2D pos = e.getPosition(gameLogic.getEnemyPosition());
-			graphics.fillRect(pos.getX(), pos.getY(), GameConstants.ENEMY_SIZE.getX(), GameConstants.ENEMY_SIZE.getY());
+			graphics.drawImage(e.getImage(), pos.getX(), pos.getY());
 		});
 
 		// 3. Draw projectiles

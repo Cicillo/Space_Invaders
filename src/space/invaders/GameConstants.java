@@ -82,7 +82,7 @@ public interface GameConstants {
 	Vec2D START_ENEMIES_POSITION = new Vec2D(LEFT_GAME_BOUND, TOP_GAME_BOUND);
 
 	/**
-	 * The horizontal movement speed of enemies, in pixels per second. Value
+	 * The horizontal movement speed of enemies, in pixels per tick. Value
 	 * adjusted so that it does not affected by {@link #GAME_TPS}.
 	 */
 	Vec2D ENEMY_MOVEMENT_SPEED = new Vec2D(50, 0).divide(GAME_TPS);
@@ -94,13 +94,13 @@ public interface GameConstants {
 	Vec2D ENEMY_DOWN_JUMP = new Vec2D(0, (ENEMY_SIZE.getY() + ENEMY_SPACING.getY()) / 2);
 
 	/**
-	 * The speed at which enemy projectiles move, in pixels per second.
+	 * The speed at which enemy projectiles move, in pixels per tick.
 	 */
 	double PROJECTILE_SPEED = 200 / GAME_TPS;
 
 	/**
 	 * The speed at which friendly (allied + player) projectiles move, in pixels
-	 * per second.
+	 * per tick.
 	 */
 	double PROJECTILE_SPEED_FRIENDLY = -600 / GAME_TPS;
 
@@ -108,6 +108,21 @@ public interface GameConstants {
 	 * The size of a normal projectile.
 	 */
 	Vec2D PROJECTILE_SIZE = new Vec2D(7, 25);
+
+	/**
+	 * The size of a laser projectile. The y component does not matter.
+	 */
+	Vec2D LASER_SIZE = new Vec2D(20, Double.MAX_VALUE);
+
+	/**
+	 * The vertical speed of the laser, in pixels per tick.
+	 */
+	double LASER_SPEED = 700 / GAME_TPS;
+
+	/**
+	 * The lifetime of a laser, in ticks.
+	 */
+	long LASER_LIFETIME = (long) (3 * GAME_TPS);
 
 	/**
 	 * Delay between player shoots.

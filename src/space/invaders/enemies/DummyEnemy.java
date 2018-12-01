@@ -13,7 +13,7 @@ import space.invaders.projectiles.Projectile;
 public class DummyEnemy extends Enemy {
 
 	private static final Image IMAGE = ImageResources.ENEMY_DUMMY.getImage();
-	
+
 	public DummyEnemy(IntegerCoordinates coords) {
 		super(IMAGE, coords);
 	}
@@ -25,6 +25,7 @@ public class DummyEnemy extends Enemy {
 
 	@Override
 	public boolean onHit(Projectile proj) {
+		alive = false;
 		return true;
 	}
 
