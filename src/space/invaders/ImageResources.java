@@ -17,9 +17,8 @@ public enum ImageResources {
 	ENEMY_NORMAL("images/enemies/enemy_normal.png"),
 	ENEMY_SUPER("images/enemies/enemy_super.png"),
 	ENEMY_LASER("images/enemies/enemy_laser.png"),
-	ENEMY_TANK_0("images/enemies/enemy_tank0.png"),
-	ENEMY_TANK_1("images/enemies/enemy_tank1.png"),
-	ENEMY_TANK_2("images/enemies/enemy_tank2.png"),
+	TANK_SHIELD_MAX("images/tank_shieldmax.png"),
+	TANK_SHIELD_DAMAGED("images/tank_shield_damaged.png"),
 	ENEMY_SPINNER("images/enemies/enemy_spinner.png"),
 	ENEMY_DUMMY("images/enemies/enemy_dummy.png"),
 	//

@@ -1,6 +1,8 @@
 package space.invaders.enemies;
 
+import javafx.application.Platform;
 import javafx.scene.image.Image;
+import javafx.scene.layout.Pane;
 import space.invaders.AnimationResources;
 import space.invaders.GameConstants;
 import space.invaders.GameLogic;
@@ -40,6 +42,7 @@ public abstract class Enemy {
 	protected volatile Image image;
 	private final IntegerCoordinates coords;
 
+	protected Pane displayPane;
 	protected volatile ImageAnimation animation;
 
 	public Enemy(Image image, IntegerCoordinates coords) {
@@ -79,11 +82,13 @@ public abstract class Enemy {
 		return animation;
 	}
 
-	public boolean initializeAnimation() {
+	public boolean initializeAnimation(Pane pane) {
 		if (animation == null)
 			return false;
-		
+
 		animation.play();
+		this.displayPane = pane;
+		Platform.runLater(() -> pane.getChildren().add(animation));
 		return true;
 	}
 
