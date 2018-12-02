@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package space.invaders;
 
 import javafx.scene.media.Media;
@@ -12,7 +7,8 @@ import javafx.scene.media.Media;
  * @author Frankie
  */
 public enum MediaResources {
-	BACKGROUND_MUSIC("audio/background_music.mp3");
+	BACKGROUND_MUSIC("audio/background_music.mp3"),
+	TANK_ANIMATION("images/enemies/tank_video.m4v");
 	
 	private final String url;
 
@@ -24,7 +20,7 @@ public enum MediaResources {
 		return url;
 	}
 	
-	public Media getClip() {
+	public Media getMedia() {
 		return AssetManager.getSound(this);
 	}
 }

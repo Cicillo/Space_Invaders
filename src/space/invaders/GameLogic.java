@@ -9,10 +9,16 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableDoubleValue;
 import javafx.beans.value.ObservableIntegerValue;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import space.invaders.enemies.DummyEnemy;
 import space.invaders.enemies.Enemy;
 import space.invaders.enemies.LaserEnemy;
@@ -49,7 +55,32 @@ public class GameLogic {
 	 */
 	private boolean enemyMovementDirection;
 
-	private final AtomicReference<Vec2D> enemyPosition;
+	private final SimpleObjectProperty<Vec2D> enemyPosition = new SimpleObjectProperty<Vec2D>() {
+		AtomicReference<Vec2D> pos = new AtomicReference<>();
+
+		@Override
+		public Vec2D get() {
+			return pos.get();
+		}
+
+		@Override
+		public Vec2D getValue() {
+			return pos.get();
+		}
+
+		@Override
+		public void set(Vec2D newValue) {
+			pos.set(newValue);
+			fireValueChangedEvent();
+		}
+
+		@Override
+		public void setValue(Vec2D newValue) {
+			pos.set(newValue);
+			fireValueChangedEvent();
+		}
+
+	};
 
 	private Scene scene;
 	private final Robot robot;
@@ -60,7 +91,6 @@ public class GameLogic {
 		this.friendlyProjectiles = ConcurrentHashMap.newKeySet();
 		this.enemyProjectiles = ConcurrentHashMap.newKeySet();
 		this.spaceshipPosition = spaceshipPosition;
-		this.enemyPosition = new AtomicReference<>();
 		this.remainingLives = GameConstants.PLAYER_LIVES;
 
 		try {
@@ -137,7 +167,7 @@ public class GameLogic {
 		return enemyPosition.get();
 	}
 
-	public AtomicReference<Vec2D> getEnemyPositionRef() {
+	public ObservableValue<Vec2D> getEnemyPositionRef() {
 		return enemyPosition;
 	}
 
@@ -145,14 +175,20 @@ public class GameLogic {
 		return enemyPosition.get().plus(GameConstants.ENEMY_DELTA.scale(gridX, gridY));
 	}
 
-	public void generateGame(Scene scene) {
-		this.scene = scene;
+	public void generateGame(GamePane pane) {
+		this.scene = pane.getScene();
 
 		// Create enemies
+		DoubleBinding xBinding = Bindings.createDoubleBinding(() -> enemyPosition.get().getX(), enemyPosition);
+		DoubleBinding yBinding = Bindings.createDoubleBinding(() -> enemyPosition.get().getY(), enemyPosition);
 		for (int x = 0; x < GameConstants.ENEMIES_GRID_LENGTH; ++x) {
 			for (int y = 0; y < GameConstants.ENEMIES_GRID_HEIGHT; ++y) {
 				IntegerCoordinates coords = new IntegerCoordinates(x, y);
-				enemies.put(coords, makeEnemy(coords));
+				Enemy enemy = makeEnemy(coords);
+				enemies.put(coords, enemy);
+				if (enemy.initializeMedia(xBinding, yBinding)) {
+					pane.getChildren().add(enemy.getMediaView());
+				}
 			}
 		}
 
@@ -268,6 +304,12 @@ public class GameLogic {
 				if (remove) {
 					IntegerCoordinates coords = collided.getCoordinates();
 					enemies.remove(coords);
+					if (collided.hasMedia()) {
+						collided.getMediaPlayer().stop();
+						Platform.runLater(() -> {
+							((Pane) collided.getMediaView().getParent()).getChildren().remove(collided.getMediaView());
+						});
+					}
 
 					// Check for victory
 					++enemiesKilled;
@@ -296,21 +338,24 @@ public class GameLogic {
 	}
 
 	private void handleProjectileToProjectileCollision() {
-		for (Iterator<Projectile> it = friendlyProjectiles.iterator(); it.hasNext();) {
-			// Projectiles shot by the player are NormalProjectile instances
-			NormalProjectile proj = (NormalProjectile) it.next();
 
-			for (Iterator<Projectile> it2 = enemyProjectiles.iterator(); it2.hasNext();) {
-				// Get enemy projectile
-				Projectile proj2 = it2.next();
+		synchronized (friendlyProjectiles) {
+			for (Iterator<Projectile> it = friendlyProjectiles.iterator(); it.hasNext();) {
+				// Projectiles shot by the player are NormalProjectile instances
+				NormalProjectile proj = (NormalProjectile) it.next();
 
-				// Check for collision (omit laser projectiles)
-				if (!(proj2 instanceof NormalProjectile) || !proj.collidesWith((NormalProjectile) proj2))
-					continue;
+				for (Iterator<Projectile> it2 = enemyProjectiles.iterator(); it2.hasNext();) {
+					// Get enemy projectile
+					Projectile proj2 = it2.next();
 
-				// Collision: remove both projectiles
-				it.remove();
-				it2.remove();
+					// Check for collision (omit laser projectiles)
+					if (!(proj2 instanceof NormalProjectile) || !proj.collidesWith((NormalProjectile) proj2))
+						continue;
+
+					// Collision: remove both projectiles
+					it.remove();
+					it2.remove();
+				}
 			}
 		}
 	}

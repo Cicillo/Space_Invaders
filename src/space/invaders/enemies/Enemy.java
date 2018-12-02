@@ -1,6 +1,10 @@
 package space.invaders.enemies;
 
+import javafx.beans.binding.DoubleBinding;
 import javafx.scene.image.Image;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import space.invaders.GameConstants;
 import space.invaders.GameLogic;
 import space.invaders.IntegerCoordinates;
@@ -38,9 +42,19 @@ public abstract class Enemy {
 	protected volatile Image image;
 	private final IntegerCoordinates coords;
 
+	protected volatile Media media;
+	protected volatile MediaPlayer mediaPlayer;
+	protected volatile MediaView mediaView;
+
 	public Enemy(Image image, IntegerCoordinates coords) {
 		this.alive = true;
 		this.image = image;
+		this.coords = coords;
+	}
+
+	public Enemy(Media media, IntegerCoordinates coords) {
+		this.alive = true;
+		this.media = media;
 		this.coords = coords;
 	}
 
@@ -58,6 +72,41 @@ public abstract class Enemy {
 	 */
 	public Image getImage() {
 		return image;
+	}
+
+	public boolean hasMedia() {
+		return media != null;
+	}
+
+	public Media getMedia() {
+		return media;
+	}
+
+	public MediaPlayer getMediaPlayer() {
+		return mediaPlayer;
+	}
+
+	public MediaView getMediaView() {
+		return mediaView;
+	}
+
+	public boolean initializeMedia(DoubleBinding xBinding, DoubleBinding yBinding) {
+		if (media == null)
+			return false;
+
+		mediaPlayer = new MediaPlayer(media);
+		mediaView = new MediaView(mediaPlayer);
+		mediaPlayer.setOnReady(() -> {
+			// Initialize media player
+			mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+			mediaPlayer.play();
+
+			// Initialize media view
+			mediaView.xProperty().bind(xBinding.add(GameConstants.ENEMY_DELTA.scale(coords.getX()).getX()));
+			mediaView.yProperty().bind(yBinding.add(GameConstants.ENEMY_DELTA.scale(coords.getY()).getY()));
+		});
+
+		return true;
 	}
 
 	/**

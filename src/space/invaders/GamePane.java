@@ -66,7 +66,7 @@ public class GamePane extends AnchorPane {
 
 	public void initialize() {
 		// 1. Initialize game logic
-		gameLogic.generateGame(getScene());
+		gameLogic.generateGame(this);
 
 		// 2. Initialize GUI
 		Scene scene = getScene();
@@ -172,6 +172,9 @@ public class GamePane extends AnchorPane {
 
 		// 2. Draw Enemies
 		gameLogic.forEachEnemy(e -> {
+			if (e.getImage() == null)
+				return;
+			
 			Vec2D pos = e.getPosition(gameLogic.getEnemyPosition());
 			graphics.drawImage(e.getImage(), pos.getX(), pos.getY());
 		});

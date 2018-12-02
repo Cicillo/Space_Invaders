@@ -1,6 +1,6 @@
 package space.invaders.projectiles;
 
-import java.util.concurrent.atomic.AtomicReference;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Bounds;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -24,9 +24,9 @@ public class LaserProjectile extends Projectile {
 	private long lifetime;
 	private RectBounds bounds;
 	private final LaserEnemy enemy;
-	private final AtomicReference<Vec2D> origin;
+	private final ObservableValue<Vec2D> origin;
 
-	public LaserProjectile(LaserEnemy enemy, AtomicReference<Vec2D> origin, long lifetime) {
+	public LaserProjectile(LaserEnemy enemy, ObservableValue<Vec2D> origin, long lifetime) {
 		super(false);
 		this.enemy = enemy;
 		this.origin = origin;
@@ -44,7 +44,7 @@ public class LaserProjectile extends Projectile {
 		bounds.enlarge(LASER_SIZE_CHANGE);
 
 		// Update X component
-		bounds.position(enemy.getPosition(origin.get())
+		bounds.position(enemy.getPosition(origin.getValue())
 				.plus(GameConstants.ENEMY_SIZE.scale(0.5, 1))
 				.minus(GameConstants.LASER_SIZE.scale(0.5, 0)));
 
