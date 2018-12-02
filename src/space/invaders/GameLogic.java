@@ -10,8 +10,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableDoubleValue;
@@ -84,6 +82,8 @@ public class GameLogic {
 
 	private Scene scene;
 	private final Robot robot;
+	
+	private Pane enemiesPane;
 
 	public GameLogic(ObservableDoubleValue spaceshipPosition) {
 		this.random = new Random();
@@ -175,28 +175,32 @@ public class GameLogic {
 		return enemyPosition.get().plus(GameConstants.ENEMY_DELTA.scale(gridX, gridY));
 	}
 
-	public void generateGame(GamePane pane) {
-		this.scene = pane.getScene();
+	public void generateGame(GamePane gamePane) {
+		// Initialize start position
+		enemyPosition.set(GameConstants.START_ENEMIES_POSITION);
+
+		this.scene = gamePane.getScene();
 
 		// Create enemies
-		DoubleBinding xBinding = Bindings.createDoubleBinding(() -> enemyPosition.get().getX(), enemyPosition);
-		DoubleBinding yBinding = Bindings.createDoubleBinding(() -> enemyPosition.get().getY(), enemyPosition);
+		enemiesPane = new Pane();
+		gamePane.getChildren().add(enemiesPane);
 		for (int x = 0; x < GameConstants.ENEMIES_GRID_LENGTH; ++x) {
 			for (int y = 0; y < GameConstants.ENEMIES_GRID_HEIGHT; ++y) {
 				IntegerCoordinates coords = new IntegerCoordinates(x, y);
 				Enemy enemy = makeEnemy(coords);
 				enemies.put(coords, enemy);
-				if (enemy.initializeMedia(xBinding, yBinding)) {
-					pane.getChildren().add(enemy.getMediaView());
+				if (enemy.initializeAnimation()) {
+					enemiesPane.getChildren().add(enemy.getAnimation());
+					enemyPosition.addListener((observable, oldValue, newValue) -> {
+						enemy.getAnimation().xProperty().set(newValue.getX() + (GameConstants.ENEMY_DELTA.getX() * coords.getX()));
+						enemy.getAnimation().yProperty().set(newValue.getY() + (GameConstants.ENEMY_DELTA.getY() * coords.getY()));
+					});
 				}
 			}
 		}
 
 		// Make enemies move right
 		enemyMovementDirection = true;
-
-		// Initialize start position
-		enemyPosition.set(GameConstants.START_ENEMIES_POSITION);
 
 		// Initialize index pointers
 		leftmostEnemy = 0;
@@ -304,11 +308,9 @@ public class GameLogic {
 				if (remove) {
 					IntegerCoordinates coords = collided.getCoordinates();
 					enemies.remove(coords);
-					if (collided.hasMedia()) {
-						collided.getMediaPlayer().stop();
-						Platform.runLater(() -> {
-							((Pane) collided.getMediaView().getParent()).getChildren().remove(collided.getMediaView());
-						});
+					if (collided.hasAnimation()) {
+						collided.getAnimation().stop();
+						Platform.runLater(() -> enemiesPane.getChildren().remove(collided.getAnimation()));
 					}
 
 					// Check for victory
@@ -343,6 +345,8 @@ public class GameLogic {
 			for (Iterator<Projectile> it = friendlyProjectiles.iterator(); it.hasNext();) {
 				// Projectiles shot by the player are NormalProjectile instances
 				NormalProjectile proj = (NormalProjectile) it.next();
+				if (proj == null)
+					continue;
 
 				for (Iterator<Projectile> it2 = enemyProjectiles.iterator(); it2.hasNext();) {
 					// Get enemy projectile
@@ -353,8 +357,11 @@ public class GameLogic {
 						continue;
 
 					// Collision: remove both projectiles
-					it.remove();
-					it2.remove();
+					try {
+						it.remove();
+						it2.remove();
+					} catch (IllegalStateException err) {
+					}
 				}
 			}
 		}

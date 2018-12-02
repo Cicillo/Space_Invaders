@@ -16,7 +16,6 @@ import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 /**
  *
@@ -54,30 +53,19 @@ public class Main extends Application {
 
 		int renderTick = (int) (1_000 / GameConstants.RENDER_FPS);
 		int gameTick = (int) (1_000_000 / GameConstants.GAME_TPS);
-		ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
+		ScheduledExecutorService executor = Executors.newScheduledThreadPool(3);
 		gameTickTask = executor.scheduleAtFixedRate(this::tickGame, gameTick, gameTick, TimeUnit.MICROSECONDS);
 		renderTask = executor.scheduleAtFixedRate(this::tickRender, renderTick, renderTick, TimeUnit.MILLISECONDS);
 
 		musicPlayer = new MediaPlayer(AssetManager.getSound(MediaResources.BACKGROUND_MUSIC));
 		musicPlayer.setOnReady(() -> {
-			//musicPlayer.setCycleCount(1000);
-			musicPlayer.setOnEndOfMedia(() -> {
-				System.out.println("end!");
-				musicPlayer.seek(Duration.ZERO);
-				musicPlayer.play();
-			});
-			musicPlayer.setOnStopped(() -> {
-				System.out.println("stopped!");
-			});
-			System.out.println(musicPlayer.getCycleDuration());
-			System.out.println(musicPlayer.getTotalDuration());
-			System.out.println(musicPlayer.getCycleCount());
-			musicPlayer.setOnRepeat(() -> System.out.println("repeat!"));
-			musicPlayer.setOnError(() -> {
-				musicPlayer.getError().printStackTrace();
-			});
+			musicPlayer.setStopTime(musicPlayer.getTotalDuration());
+			musicPlayer.setCycleCount(1000);
+			musicPlayer.setVolume(0.4);
 			musicPlayer.play();
 		});
+		
+		ImageAnimation.initialize(executor);
 	}
 
 	private void tickGame() {

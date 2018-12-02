@@ -2,6 +2,7 @@ package space.invaders.enemies;
 
 import java.util.Random;
 import javafx.scene.image.Image;
+import space.invaders.AnimationResources;
 import space.invaders.GameConstants;
 import space.invaders.GameLogic;
 import space.invaders.ImageResources;
@@ -22,14 +23,13 @@ public class SpinnerEnemy extends Enemy {
 		return (long) ((18 + 7 * rand.nextDouble()) * GameConstants.GAME_TPS);
 	}
 
-	private static final Image SPINNER_IMAGE = ImageResources.ENEMY_SPINNER.getImage();
 	private static final Image PELLET_IMAGE = ImageResources.PROJECTILE_SPINNER.getImage();
 
 	private long cooldownTimer = 60; // TODO
 	private long shootingTimer = -1;
 
 	public SpinnerEnemy(IntegerCoordinates coords) {
-		super(SPINNER_IMAGE, coords);
+		super(AnimationResources.ENEMY_SPINNER, coords);
 	}
 
 	@Override

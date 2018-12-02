@@ -19,6 +19,10 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
@@ -29,7 +33,7 @@ import space.invaders.projectiles.NormalProjectile;
  *
  * @author Totom3
  */
-public class GamePane extends AnchorPane {
+public class GamePane extends StackPane {
 
 	private static final Font TEXT_FONT = Font.loadFont(Main.class.getClassLoader().getResourceAsStream("fonts/Portico Vintage.otf"), 30);
 
@@ -40,6 +44,8 @@ public class GamePane extends AnchorPane {
 	private final Label gameStatusLabel;
 	private final Rectangle spaceship;
 	private final GameLogic gameLogic;
+	private final MediaPlayer backgroundPlayer;
+	private final MediaView backgroundViewer;
 
 	private long lastShotTime;
 	private volatile boolean mousePressed;
@@ -58,6 +64,30 @@ public class GamePane extends AnchorPane {
 		this.highscoreLabel = new Label(String.valueOf(highscore));
 		this.gameStatusLabel = new Label("");
 		this.spaceship = new Rectangle(GameConstants.LEFT_GAME_BOUND, GameConstants.SPACESHIP_Y, GameConstants.SPACESHIP_SIZE.getX(), GameConstants.SPACESHIP_SIZE.getX());
+
+		Media bg = MediaResources.BACKGROUND_ANIMATION.getMedia();
+		backgroundPlayer = new MediaPlayer(bg);
+		backgroundViewer = new MediaView(backgroundPlayer);
+		backgroundPlayer.setOnReady(() -> {
+			//backgroundPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+			backgroundPlayer.setOnEndOfMedia(() -> {
+				System.out.println("end");
+			});
+			backgroundPlayer.setOnRepeat(() -> {
+				System.out.println("repeat");
+			});
+			backgroundPlayer.setOnStopped(() -> {
+				System.out.println("stop");
+			});
+			backgroundPlayer.setOnHalted(() -> System.out.println("halted"));
+			backgroundPlayer.setOnStalled(() -> System.out.println("stalled"));
+			backgroundPlayer.setOnPaused(() -> System.out.println("paused"));
+			backgroundPlayer.setOnError(() -> {
+				backgroundPlayer.getError().printStackTrace();
+			});
+			backgroundPlayer.play();
+
+		});
 	}
 
 	public GameLogic getLogic() {
@@ -65,10 +95,7 @@ public class GamePane extends AnchorPane {
 	}
 
 	public void initialize() {
-		// 1. Initialize game logic
-		gameLogic.generateGame(this);
-
-		// 2. Initialize GUI
+		// Initialize GUI
 		Scene scene = getScene();
 		spaceship.setFill(Color.BLUE);
 		canvas.widthProperty().bind(scene.widthProperty());
@@ -90,6 +117,10 @@ public class GamePane extends AnchorPane {
 		gameStatusLabel.prefWidthProperty().bind(scene.widthProperty());
 		gameStatusLabel.prefHeightProperty().bind(scene.heightProperty());
 
+		//backgroundViewer.fitWidthProperty().bind(scene.widthProperty());
+		backgroundViewer.fitHeightProperty().bind(scene.heightProperty());
+		StackPane.setAlignment(backgroundViewer, Pos.TOP_LEFT);
+
 		GridPane grid = new GridPane();
 		grid.getColumnConstraints().addAll(constr(HPos.LEFT), constr(HPos.CENTER), constr(HPos.RIGHT));
 		grid.prefWidthProperty().bind(scene.widthProperty());
@@ -98,7 +129,12 @@ public class GamePane extends AnchorPane {
 		grid.addColumn(0, scoreTextLabel, scoreLabel);
 		grid.addColumn(1, levelTextLabel, levelLabel);
 		grid.addColumn(2, highscoreTextLabel, highscoreLabel);
-		getChildren().addAll(grid, canvas, spaceship, livesLabel, gameStatusLabel);
+		AnchorPane anchorPane = new AnchorPane();
+		anchorPane.getChildren().addAll(grid, spaceship, livesLabel);
+
+		// Initialize game logic
+		getChildren().addAll(backgroundViewer, canvas, anchorPane, gameStatusLabel);
+		gameLogic.generateGame(this);
 
 		this.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
 
@@ -174,7 +210,7 @@ public class GamePane extends AnchorPane {
 		gameLogic.forEachEnemy(e -> {
 			if (e.getImage() == null)
 				return;
-			
+
 			Vec2D pos = e.getPosition(gameLogic.getEnemyPosition());
 			graphics.drawImage(e.getImage(), pos.getX(), pos.getY());
 		});

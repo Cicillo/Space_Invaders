@@ -1,9 +1,9 @@
 package space.invaders.enemies;
 
 import java.util.Random;
+import space.invaders.AnimationResources;
 import space.invaders.GameConstants;
 import space.invaders.GameLogic;
-import space.invaders.ImageResources;
 import space.invaders.IntegerCoordinates;
 import space.invaders.projectiles.LaserProjectile;
 import space.invaders.projectiles.Projectile;
@@ -22,7 +22,7 @@ public class LaserEnemy extends Enemy {
 	private long cooldownTimer = -1;
 
 	public LaserEnemy(IntegerCoordinates coords) {
-		super(ImageResources.ENEMY_LASER.getImage(), coords);
+		super(AnimationResources.ENEMY_LASER, coords);
 	}
 
 	@Override

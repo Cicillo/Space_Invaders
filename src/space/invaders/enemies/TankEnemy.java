@@ -1,11 +1,11 @@
 package space.invaders.enemies;
 
 import javafx.scene.image.Image;
+import space.invaders.AnimationResources;
 import space.invaders.GameConstants;
 import space.invaders.GameLogic;
 import space.invaders.ImageResources;
 import space.invaders.IntegerCoordinates;
-import space.invaders.MediaResources;
 import space.invaders.projectiles.Projectile;
 
 /**
@@ -21,7 +21,7 @@ public class TankEnemy extends Enemy {
 	private int shieldCapacity;
 
 	public TankEnemy(IntegerCoordinates coords) {
-		super(MediaResources.TANK_ANIMATION.getMedia(), coords);
+		super(AnimationResources.ENEMY_TANK, coords);
 		this.shieldCapacity = GameConstants.TANK_CAPACITY;
 	}
 
@@ -41,7 +41,6 @@ public class TankEnemy extends Enemy {
 
 		// Update media
 		//this.image = IMAGES[shieldCapacity];
-
 		return false;
 	}
 
