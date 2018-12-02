@@ -14,6 +14,26 @@ import space.invaders.projectiles.Projectile;
  */
 public abstract class Enemy {
 
+	public static int getEnemyKillScore(Enemy e) {
+		if (e instanceof LaserEnemy) {
+			return GameConstants.SCORE_LASER_KILLED;
+		}
+
+		if (e instanceof SpinnerEnemy) {
+			return GameConstants.SCORE_SPINNER_KILLED;
+		}
+
+		if (e instanceof TankEnemy) {
+			return GameConstants.SCORE_TANK_KILLED;
+		}
+
+		if (e instanceof DummyEnemy) {
+			return GameConstants.SCORE_DUMMY_KILLED;
+		}
+
+		throw new IllegalArgumentException();
+	}
+
 	protected boolean alive;
 	protected volatile Image image;
 	private final IntegerCoordinates coords;

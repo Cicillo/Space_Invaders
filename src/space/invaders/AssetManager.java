@@ -5,17 +5,18 @@ package space.invaders;
  * @author Frankie
  */
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.util.EnumMap;
 import java.util.Map;
 import javafx.scene.image.Image;
-import javafx.scene.media.AudioClip;
+import javafx.scene.media.Media;
 
 public class AssetManager {
 
 	static {
 		System.out.println("Loading resources...");
 		imageMap = new EnumMap<>(ImageResources.class);
-		audioMap = new EnumMap<>(AudioResources.class);
+		mediaMap = new EnumMap<>(MediaResources.class);
 		loadResources();
 		System.out.println("Finished loading resources!");
 	}
@@ -23,14 +24,14 @@ public class AssetManager {
 	private static boolean loadedResources;
 
 	private static final Map<ImageResources, Image> imageMap;
-	private static final Map<AudioResources, AudioClip> audioMap;
+	private static final Map<MediaResources, Media> mediaMap;
 
 	public static Image getImage(ImageResources image) {
 		return imageMap.get(image);
 	}
 
-	public static AudioClip getSound(AudioResources audio) {
-		return audioMap.get(audio);
+	public static Media getSound(MediaResources media) {
+		return mediaMap.get(media);
 	}
 
 	public static void loadResources() {
@@ -39,6 +40,7 @@ public class AssetManager {
 
 		loadedResources = true;
 
+		// Load image
 		for (ImageResources res : ImageResources.values()) {
 			InputStream in = AssetManager.class.getClassLoader().getResourceAsStream(res.getURL());
 			if (in == null) {
@@ -57,7 +59,17 @@ public class AssetManager {
 			}
 		}
 
-		// TODO: load audio clips
+		// Load Media resources
+		for (MediaResources res : MediaResources.values()) {
+			try {
+				Media media = new Media(AssetManager.class.getClassLoader().getResource(res.getURL()).toURI().toString());
+				mediaMap.put(res, media);
+				System.out.println("Loaded " + res + "!");
+			} catch (NullPointerException | IllegalArgumentException | URISyntaxException ex) {
+				System.err.println("Could not load resource " + res + ": ");
+				ex.printStackTrace(System.err);
+			}
+		}
 	}
 
 	private AssetManager() {

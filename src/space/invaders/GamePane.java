@@ -44,8 +44,10 @@ public class GamePane extends AnchorPane {
 	private long lastShotTime;
 	private volatile boolean mousePressed;
 	private volatile DoubleProperty spaceshipPosition;
+	private int currentHighscore;
 
-	public GamePane() {
+	public GamePane(int highscore) {
+		this.currentHighscore = highscore;
 		this.spaceshipPosition = new SimpleDoubleProperty();
 
 		this.canvas = new Canvas();
@@ -53,9 +55,13 @@ public class GamePane extends AnchorPane {
 
 		this.scoreLabel = new Label("0");
 		this.levelLabel = new Label("1");
-		this.highscoreLabel = new Label("0");
+		this.highscoreLabel = new Label(String.valueOf(highscore));
 		this.gameStatusLabel = new Label("");
 		this.spaceship = new Rectangle(GameConstants.LEFT_GAME_BOUND, GameConstants.SPACESHIP_Y, GameConstants.SPACESHIP_SIZE.getX(), GameConstants.SPACESHIP_SIZE.getX());
+	}
+
+	public GameLogic getLogic() {
+		return gameLogic;
 	}
 
 	public void initialize() {
@@ -104,6 +110,12 @@ public class GamePane extends AnchorPane {
 		});
 		scene.setOnMouseReleased(e -> {
 			mousePressed = false;
+		});
+
+		gameLogic.getScore().addListener((obs, oldValue, newValue) -> {
+			Platform.runLater(() -> {
+				scoreLabel.setText(String.valueOf(newValue));
+			});
 		});
 	}
 

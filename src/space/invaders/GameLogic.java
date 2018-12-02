@@ -9,11 +9,15 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ObservableDoubleValue;
+import javafx.beans.value.ObservableIntegerValue;
 import javafx.scene.Scene;
 import space.invaders.enemies.DummyEnemy;
 import space.invaders.enemies.Enemy;
+import space.invaders.enemies.LaserEnemy;
 import space.invaders.enemies.SpinnerEnemy;
+import space.invaders.enemies.TankEnemy;
 import space.invaders.projectiles.NormalProjectile;
 import space.invaders.projectiles.Projectile;
 
@@ -28,6 +32,7 @@ public class GameLogic {
 	private final Set<Projectile> friendlyProjectiles;
 	private final Set<Projectile> enemyProjectiles;
 	private final ObservableDoubleValue spaceshipPosition;
+	private final SimpleIntegerProperty scoreValue;
 
 	private int leftmostEnemy;
 	private int rightmostEnemy;
@@ -63,10 +68,16 @@ public class GameLogic {
 		} catch (AWTException ex) {
 			throw new RuntimeException(ex);
 		}
+
+		this.scoreValue = new SimpleIntegerProperty(0);
 	}
 
 	public Random getRandom() {
 		return random;
+	}
+
+	public ObservableIntegerValue getScore() {
+		return scoreValue;
 	}
 
 	public boolean isFrozen() {
@@ -141,7 +152,7 @@ public class GameLogic {
 		for (int x = 0; x < GameConstants.ENEMIES_GRID_LENGTH; ++x) {
 			for (int y = 0; y < GameConstants.ENEMIES_GRID_HEIGHT; ++y) {
 				IntegerCoordinates coords = new IntegerCoordinates(x, y);
-				enemies.put(coords, (x == 5 && y == 2) ? new SpinnerEnemy(coords) : new DummyEnemy(coords));
+				enemies.put(coords, makeEnemy(coords));
 			}
 		}
 
@@ -155,6 +166,31 @@ public class GameLogic {
 		leftmostEnemy = 0;
 		rightmostEnemy = GameConstants.ENEMIES_GRID_LENGTH - 1;
 		downmostEnemy = GameConstants.ENEMIES_GRID_HEIGHT - 1;
+	}
+
+	private static final String[] LEVEL_ENEMIES = {
+		"NSNSNSNSNSN",
+		"NNNNNNNNNNN",
+		"NNPNLNLNPNN",
+		"NTTNTNTNTTN",
+		"NNNTTTTTNNN"
+	};
+
+	private Enemy makeEnemy(IntegerCoordinates coords) {
+		char c = LEVEL_ENEMIES[coords.getY()].charAt(coords.getX());
+		switch (c) {
+			case 'N':
+			case 'S':
+				return new DummyEnemy(coords);
+			case 'T':
+				return new TankEnemy(coords);
+			case 'P':
+				return new SpinnerEnemy(coords);
+			case 'L':
+				return new LaserEnemy(coords);
+			default:
+				throw new AssertionError("Unexpected char " + c);
+		}
 	}
 
 	public void tickGame() {
@@ -235,6 +271,7 @@ public class GameLogic {
 
 					// Check for victory
 					++enemiesKilled;
+					scoreValue.set(Enemy.getEnemyKillScore(collided) + scoreValue.get());
 					if (enemiesKilled >= GameConstants.ENEMIES_COUNT) {
 						gameState = 1;
 						return;

@@ -173,4 +173,34 @@ public interface GameConstants {
 	 * The time to freeze the game for when the player loses a life, in ticks.
 	 */
 	long DEATH_FREEZE_TIME = (long) (5 * GAME_TPS);
+
+	/**
+	 * Score received for killing a dummy enemy.
+	 */
+	int SCORE_DUMMY_KILLED = 5;
+
+	/**
+	 * Score received for killing a normal enemy.
+	 */
+	int SCORE_NORMAL_KILLED = 10;
+
+	/**
+	 * Score received for killing a super enemy.
+	 */
+	int SCORE_SUPER_KILLED = 20;
+
+	/**
+	 * Score received for killing a spinner enemy.
+	 */
+	int SCORE_SPINNER_KILLED = 30;
+
+	/**
+	 * Score received for killing a tank enemy.
+	 */
+	int SCORE_TANK_KILLED = 30;
+
+	/**
+	 * Score received for killing a laser enemy.
+	 */
+	int SCORE_LASER_KILLED = 40;
 }
