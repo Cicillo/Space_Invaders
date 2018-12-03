@@ -31,6 +31,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import space.invaders.projectiles.NormalProjectile;
+import space.invaders.util.MediaResources;
 
 /**
  *
@@ -168,6 +169,8 @@ public class GamePane extends StackPane {
 		Vec2D velocity = new Vec2D(0, GameConstants.PROJECTILE_SPEED_FRIENDLY);
 		NormalProjectile proj = new NormalProjectile(true, bounds, velocity, NormalProjectile.DEFAULT_IMAGE);
 		gameLogic.addProjectile(proj);
+        
+        MediaResources.PLAYER_SHOOT_SOUND.playSound();
 	}
 
 	public void drawCanvas() {

@@ -10,10 +10,11 @@ import space.invaders.util.RectBounds;
 import space.invaders.util.Vec2D;
 import space.invaders.projectiles.NormalProjectile;
 import space.invaders.projectiles.Projectile;
+import space.invaders.util.MediaResources;
 
 /**
  *
- * @author Frankie
+ * @author Tomer Moran
  */
 public class NormalEnemy extends Enemy {
 
@@ -60,6 +61,8 @@ public class NormalEnemy extends Enemy {
 
 		NormalProjectile proj = new NormalProjectile(false, bounds, new Vec2D(0, GameConstants.PROJECTILE_SPEED), PROJECTILE_IMAGE);
 		logic.addProjectile(proj);
+        
+        MediaResources.ENEMY_SHOOT_SOUND.playSound();
 	}
 
 	@Override
