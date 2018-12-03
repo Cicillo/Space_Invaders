@@ -41,7 +41,7 @@ public class GamePane extends StackPane {
 	private final Label gameStatusLabel;
 	private final Rectangle spaceship;
 	private final GameLogic gameLogic;
-	private final ImageAnimation animation;
+	private final ImageAnimation background;
 
 	private long lastShotTime;
 	private volatile boolean mousePressed;
@@ -61,7 +61,7 @@ public class GamePane extends StackPane {
 		this.gameStatusLabel = new Label("");
 		this.spaceship = new Rectangle(GameConstants.LEFT_GAME_BOUND, GameConstants.SPACESHIP_Y, GameConstants.SPACESHIP_SIZE.getX(), GameConstants.SPACESHIP_SIZE.getX());
 
-		animation = new ImageAnimation(AnimationResources.BACKGROUND.getAnimation());
+		background = new ImageAnimation(AnimationResources.BACKGROUND.getAnimation());
 	}
 
 	public GameLogic getLogic() {
@@ -81,8 +81,8 @@ public class GamePane extends StackPane {
 		Label livesLabel = new Label("LIVES");
 
 		formatLabels(scoreTextLabel, levelTextLabel, highscoreTextLabel, scoreLabel, levelLabel, highscoreLabel, livesLabel, gameStatusLabel);
-		gameStatusLabel.setTextFill(Color.BLACK);
-		
+		gameStatusLabel.setTextFill(Color.RED);
+
 		AnchorPane.setLeftAnchor(livesLabel, GameConstants.LEFT_GAME_BOUND);
 		AnchorPane.setBottomAnchor(livesLabel, 3.0);
 
@@ -92,9 +92,9 @@ public class GamePane extends StackPane {
 		gameStatusLabel.prefWidthProperty().bind(scene.widthProperty());
 		gameStatusLabel.prefHeightProperty().bind(scene.heightProperty());
 
-		animation.fitWidthProperty().bind(scene.widthProperty());
-		animation.fitHeightProperty().bind(scene.heightProperty());
-		StackPane.setAlignment(animation, Pos.TOP_LEFT);
+		background.fitWidthProperty().bind(scene.widthProperty());
+		background.fitHeightProperty().bind(scene.heightProperty());
+		StackPane.setAlignment(background, Pos.TOP_LEFT);
 
 		GridPane grid = new GridPane();
 		grid.getColumnConstraints().addAll(constr(HPos.LEFT), constr(HPos.CENTER), constr(HPos.RIGHT));
@@ -108,9 +108,10 @@ public class GamePane extends StackPane {
 		anchorPane.getChildren().addAll(grid, spaceship, livesLabel);
 
 		// Initialize game logic
-		getChildren().addAll(animation, canvas, anchorPane, gameStatusLabel);
+		getChildren().addAll(background, canvas, anchorPane);
 		gameLogic.generateGame(this);
-		animation.play();
+		getChildren().addAll(gameStatusLabel);
+		background.play();
 
 		this.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
 
@@ -191,7 +192,7 @@ public class GamePane extends StackPane {
 			Vec2D pos = e.getPosition(enemyPosition);
 			graphics.drawImage(e.getImage(), pos.getX(), pos.getY());
 		});
-		
+
 		// Move animated enemies
 		gameLogic.forEachEnemy(e -> {
 			e.moveAnimation(enemyPosition);
