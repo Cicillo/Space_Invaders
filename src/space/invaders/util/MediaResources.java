@@ -9,12 +9,12 @@ import javafx.scene.media.MediaPlayer;
  */
 public enum MediaResources {
 	BACKGROUND_MUSIC("audio/background_music.mp3"),
-	PLAYER_SHOOT_SOUND("audio/player_shoot.wav"),
-	ENEMY_SHOOT_SOUND("audio/enemy_shoot.wav"),
-	LASER_SHOOT_SOUND("audio/laser_shoot.wav"),
+	NORMAL_SHOOT_SOUND("audio/normal_shoot.mp3"),
+	SUPER_SHOOT_SOUND("audio/super_shoot.mp3"),
+	LASER_SHOOT_SOUND("audio/laser_shoot.mp3"),
 	SPINNER_SHOOT_SOUND("audio/spinner_shoot.wav"),
-	ENEMY_KILLED_SOUND("audio/enemy_killed.wav"),
-	PLAYER_KILLED_SOUND("audio/player_killed.wav");
+	ENEMY_KILLED_SOUND("audio/enemy_killed.mp3"),
+	PLAYER_KILLED_SOUND("audio/player_killed.mp3");
 
 	private final String url;
 

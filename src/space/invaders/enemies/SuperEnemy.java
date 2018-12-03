@@ -39,7 +39,7 @@ public class SuperEnemy extends NormalEnemy {
         NormalProjectile proj2 = new NormalProjectile(false, bounds2, new Vec2D(0, GameConstants.PROJECTILE_SPEED_SUPER), PROJECTILE_IMAGE);
         logic.addProjectile(proj2);
 
-        MediaResources.ENEMY_SHOOT_SOUND.playSound();
+        MediaResources.SUPER_SHOOT_SOUND.playSound();
     }
 
     @Override
