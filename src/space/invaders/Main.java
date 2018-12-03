@@ -1,5 +1,9 @@
 package space.invaders;
 
+import space.invaders.util.AssetManager;
+import space.invaders.util.ImageAnimation;
+import space.invaders.util.EndGameException;
+import space.invaders.util.MediaResources;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;

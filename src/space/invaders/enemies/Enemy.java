@@ -3,13 +3,13 @@ package space.invaders.enemies;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
-import space.invaders.AnimationResources;
+import space.invaders.util.AnimationResources;
 import space.invaders.GameConstants;
 import space.invaders.GameLogic;
-import space.invaders.ImageAnimation;
-import space.invaders.IntegerCoordinates;
-import space.invaders.RectBounds;
-import space.invaders.Vec2D;
+import space.invaders.util.ImageAnimation;
+import space.invaders.util.IntegerCoordinates;
+import space.invaders.util.RectBounds;
+import space.invaders.util.Vec2D;
 import space.invaders.projectiles.Projectile;
 
 /**

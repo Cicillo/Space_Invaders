@@ -3,7 +3,7 @@ package space.invaders.projectiles;
 import javafx.geometry.Bounds;
 import javafx.scene.canvas.GraphicsContext;
 import space.invaders.GameLogic;
-import space.invaders.RectBounds;
+import space.invaders.util.RectBounds;
 import space.invaders.enemies.Enemy;
 
 public abstract class Projectile {

@@ -5,9 +5,9 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import space.invaders.GameConstants;
 import space.invaders.GameLogic;
-import space.invaders.ImageResources;
-import space.invaders.RectBounds;
-import space.invaders.Vec2D;
+import space.invaders.util.ImageResources;
+import space.invaders.util.RectBounds;
+import space.invaders.util.Vec2D;
 import space.invaders.enemies.Enemy;
 
 /**

@@ -2,8 +2,8 @@ package space.invaders.enemies;
 
 import javafx.scene.image.Image;
 import space.invaders.GameLogic;
-import space.invaders.ImageResources;
-import space.invaders.IntegerCoordinates;
+import space.invaders.util.ImageResources;
+import space.invaders.util.IntegerCoordinates;
 import space.invaders.projectiles.Projectile;
 
 /**

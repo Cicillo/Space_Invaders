@@ -1,5 +1,11 @@
 package space.invaders;
 
+import space.invaders.util.ImageAnimation;
+import space.invaders.util.EndGameException;
+import space.invaders.util.ImageResources;
+import space.invaders.util.RectBounds;
+import space.invaders.util.Vec2D;
+import space.invaders.util.AnimationResources;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;

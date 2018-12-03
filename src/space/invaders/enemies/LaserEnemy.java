@@ -1,10 +1,10 @@
 package space.invaders.enemies;
 
 import java.util.Random;
-import space.invaders.AnimationResources;
+import space.invaders.util.AnimationResources;
 import space.invaders.GameConstants;
 import space.invaders.GameLogic;
-import space.invaders.IntegerCoordinates;
+import space.invaders.util.IntegerCoordinates;
 import space.invaders.projectiles.LaserProjectile;
 import space.invaders.projectiles.Projectile;
 

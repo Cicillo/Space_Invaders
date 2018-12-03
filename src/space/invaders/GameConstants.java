@@ -1,5 +1,7 @@
 package space.invaders;
 
+import space.invaders.util.Vec2D;
+
 /**
  *
  * @author Tomer Moran

@@ -1,5 +1,8 @@
 package space.invaders;
 
+import space.invaders.util.IntegerCoordinates;
+import space.invaders.util.RectBounds;
+import space.invaders.util.Vec2D;
 import java.awt.AWTException;
 import java.awt.Robot;
 import java.io.File;
