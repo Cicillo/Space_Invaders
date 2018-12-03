@@ -85,7 +85,7 @@ public class AssetManager {
 			ObservableList<Image> images = FXCollections.observableArrayList();
 
 			for (int i = 1; i <= res.getFrames(); ++i) {
-				String url = String.format("%s%04d.png", res.getURL(), i);
+				String url = String.format("%s%04d.%s", res.getURL(), i, res.getFormat());
 				InputStream in = AssetManager.class.getClassLoader().getResourceAsStream(url);
 				if (in == null) {
 					System.err.println("Could not load resource " + res + ": no such asset '" + url + "'");

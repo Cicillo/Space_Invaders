@@ -19,7 +19,8 @@ public class LaserEnemy extends Enemy {
 		return (long) ((10 + 5 * rand.nextDouble()) * GameConstants.GAME_TPS);
 	}
 
-	private long cooldownTimer = -1;
+		private long cooldownTimer = (long) (15 * GameConstants.GAME_TPS * Math.random());
+
 
 	public LaserEnemy(IntegerCoordinates coords) {
 		super(AnimationResources.ENEMY_LASER, coords);

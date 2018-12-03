@@ -2,8 +2,11 @@ package space.invaders;
 
 import java.awt.AWTException;
 import java.awt.Robot;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Iterator;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
@@ -190,6 +193,9 @@ public class GameLogic {
 			for (int y = 0; y < GameConstants.ENEMIES_GRID_HEIGHT; ++y) {
 				IntegerCoordinates coords = new IntegerCoordinates(x, y);
 				Enemy enemy = makeEnemy(coords);
+				if (enemy == null)
+					continue;
+				
 				enemies.put(coords, enemy);
 				enemy.initializeAnimation(enemiesPane);
 			}
@@ -204,13 +210,57 @@ public class GameLogic {
 		downmostEnemy = GameConstants.ENEMIES_GRID_HEIGHT - 1;
 	}
 
-	private static final String[] LEVEL_ENEMIES = {
+	private static final String[] LEVEL_TEST = {
 		"NSNSNSNSNSN",
 		"NNNNNNNNNNN",
 		"NNPNLNLNPNN",
 		"NTTNTNTNTTN",
 		"NNNTTTTTNNN"
 	};
+
+	private static final String[] LEVEL_LASERS = {
+		"LLLLLLLLLLL",
+		"LLLLLLLLLLL",
+		"LLLLLLLLLLL",
+		"LLLLLLLLLLL",
+		"LLLLLLLLLLL"
+	};
+
+	private static final String[] LEVEL_SUPERS = {
+		"SSLSLSLSLSS",
+		"SSLSLSLSLSS",
+		"SSSSSSSSSSS",
+		"TTTTTTTTTTT",
+		"TTTTTTTTTTT"
+	};
+
+	private static final String[] LEVEL_SPINNERS = {
+		"TTTPPPPPTTT",
+		"TTTPPPPPTTT",
+		"TTTPPPPPTTT",
+		"TTTPPPPPTTT",
+		"TTTPPPPPTTT"
+	};
+
+	static {
+		String str[];
+		try {
+			File file = new File("./level.txt");
+			Scanner sc = new Scanner(file);
+			str = new String[5];
+			for (int i = 0; i < GameConstants.ENEMIES_GRID_HEIGHT; ++i) {
+				str[i] = sc.nextLine();
+			}
+			sc.close();
+
+		} catch (FileNotFoundException ex) {
+			str = LEVEL_SUPERS;
+		}
+
+		LEVEL_ENEMIES = str;
+	}
+
+	private static final String[] LEVEL_ENEMIES;
 
 	private Enemy makeEnemy(IntegerCoordinates coords) {
 		char c = LEVEL_ENEMIES[coords.getY()].charAt(coords.getX());
@@ -227,6 +277,8 @@ public class GameLogic {
 				return new SpinnerEnemy(coords);
 			case 'L':
 				return new LaserEnemy(coords);
+			case ' ':
+				return null;
 			default:
 				throw new AssertionError("Unexpected char " + c);
 		}

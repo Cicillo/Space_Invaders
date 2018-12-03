@@ -25,8 +25,8 @@ public class SpinnerEnemy extends Enemy {
 
 	private static final Image PELLET_IMAGE = ImageResources.PROJECTILE_SPINNER.getImage();
 
-	private long cooldownTimer = -1;
 	private long shootingTimer = -1;
+	private long cooldownTimer = (long) (25 * GameConstants.GAME_TPS * Math.random());
 
 	public SpinnerEnemy(IntegerCoordinates coords) {
 		super(AnimationResources.ENEMY_SPINNER, coords);

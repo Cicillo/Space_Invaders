@@ -3,6 +3,7 @@ package space.invaders;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -18,10 +19,12 @@ public class ImageAnimation extends ImageView {
 	public static void initialize(ScheduledExecutorService exec) {
 		long delay = 1000 / 24;
 		exec.scheduleAtFixedRate(() -> {
-			for (ImageAnimation animation : animations) {
-				animation.index = (animation.index + 1) % animation.images.size();
-				animation.setImage(animation.images.get(animation.index));
-			}
+			Platform.runLater(() -> {
+				for (ImageAnimation animation : animations) {
+					animation.index = (animation.index + 1) % animation.images.size();
+					animation.setImage(animation.images.get(animation.index));
+				}
+			});
 		}, delay, delay, TimeUnit.MILLISECONDS);
 	}
 

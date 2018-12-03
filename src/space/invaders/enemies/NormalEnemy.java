@@ -18,9 +18,9 @@ import space.invaders.projectiles.Projectile;
 public class NormalEnemy extends Enemy {
 
 	private static final Image NORMAL_IMAGE = ImageResources.ENEMY_NORMAL.getImage();
-	private static final Image PROJECTILE_IMAGE = ImageResources.PROJECTILE_NORMAL.getImage();
+	protected static final Image PROJECTILE_IMAGE = ImageResources.PROJECTILE_NORMAL.getImage();
 
-	private long cooldownTimer = -1;
+	private long cooldownTimer = (long) (14 * GameConstants.GAME_TPS * Math.random());
 
 	public NormalEnemy(IntegerCoordinates coords) {
 		super(NORMAL_IMAGE, coords);
@@ -44,6 +44,13 @@ public class NormalEnemy extends Enemy {
 			return;
 		}
 
+		shootProjectile(logic);
+
+		// Update cooldown timer
+		cooldownTimer = getCooldown(logic.getRandom());
+	}
+	
+	protected void shootProjectile(GameLogic logic) {
 		// Shoot projectile
 		Vec2D pos = getPosition(logic.getEnemyPosition())
 				.plus(GameConstants.ENEMY_SIZE.scale(0.5, 1))
@@ -53,9 +60,6 @@ public class NormalEnemy extends Enemy {
 
 		NormalProjectile proj = new NormalProjectile(false, bounds, new Vec2D(0, GameConstants.PROJECTILE_SPEED), PROJECTILE_IMAGE);
 		logic.addProjectile(proj);
-
-		// Update cooldown timer
-		cooldownTimer = getCooldown(logic.getRandom());
 	}
 
 	@Override
