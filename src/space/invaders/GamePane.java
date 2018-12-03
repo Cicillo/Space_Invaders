@@ -7,6 +7,7 @@ import space.invaders.util.RectBounds;
 import space.invaders.util.Vec2D;
 import space.invaders.util.AnimationResources;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.HPos;
@@ -76,6 +77,7 @@ public class GamePane extends StackPane {
 	}
 
 	public void initialize() {
+
 		// Initialize GUI
 		Scene scene = getScene();
 		spaceship.setFill(Color.BLUE);
@@ -92,6 +94,12 @@ public class GamePane extends StackPane {
 
 		AnchorPane.setLeftAnchor(livesLabel, GameConstants.LEFT_GAME_BOUND);
 		AnchorPane.setBottomAnchor(livesLabel, 3.0);
+
+		gameLogic.getLevel().addListener((observable, oldValue, newValue) -> {
+			Platform.runLater(() -> {
+				levelLabel.setText(String.valueOf(1 + newValue.intValue()));
+			});
+		});
 
 		gameStatusLabel.setVisible(false);
 		gameStatusLabel.setAlignment(Pos.CENTER);
@@ -116,7 +124,10 @@ public class GamePane extends StackPane {
 
 		// Initialize game logic
 		getChildren().addAll(background, canvas, anchorPane);
-		gameLogic.generateGame(this);
+		gameLogic.initialize(this, (str) -> {
+			Platform.runLater(() -> gameStatusLabel.setText(str));
+		});
+		gameLogic.generateGame();
 		getChildren().addAll(gameStatusLabel);
 		background.play();
 
@@ -140,8 +151,9 @@ public class GamePane extends StackPane {
 	}
 
 	private void handleMouseMove(MouseEvent e) {
-		if (gameLogic.hasWon() || gameLogic.hasLost())
+		if (gameLogic.hasWon() || gameLogic.hasLost()) {
 			return;
+		}
 
 		double pos = e.getSceneX() - GameConstants.SPACESHIP_SIZE.getX() / 2;
 		if (gameLogic.isFrozen()) {
@@ -154,8 +166,9 @@ public class GamePane extends StackPane {
 	}
 
 	private void handleShoot(MouseEvent e) {
-		if (gameLogic.isFrozen())
+		if (gameLogic.isFrozen()) {
 			return;
+		}
 
 		// To prevent spam, there must be a certain delay between shots
 		long deltaT = System.currentTimeMillis() - lastShotTime;
@@ -169,8 +182,8 @@ public class GamePane extends StackPane {
 		Vec2D velocity = new Vec2D(0, GameConstants.PROJECTILE_SPEED_FRIENDLY);
 		NormalProjectile proj = new NormalProjectile(true, bounds, velocity, NormalProjectile.DEFAULT_IMAGE);
 		gameLogic.addProjectile(proj);
-        
-        MediaResources.NORMAL_SHOOT_SOUND.playSound();
+
+		MediaResources.NORMAL_SHOOT_SOUND.playSound();
 	}
 
 	public void drawCanvas() {
@@ -182,7 +195,6 @@ public class GamePane extends StackPane {
 		// Display death message
 		if (gameLogic.isFrozen()) {
 			gameStatusLabel.setVisible(true);
-			gameStatusLabel.setText("You died! " + gameLogic.getRemainingLives() + " lives left.");
 		} else {
 			gameStatusLabel.setVisible(false);
 		}
@@ -195,8 +207,9 @@ public class GamePane extends StackPane {
 		// 2. Draw Enemies
 		Vec2D enemyPosition = gameLogic.getEnemyPosition();
 		gameLogic.forEachEnemy(e -> {
-			if (e.getImage() == null)
+			if (e.getImage() == null) {
 				return;
+			}
 
 			Vec2D pos = e.getPosition(enemyPosition);
 			graphics.drawImage(e.getImage(), pos.getX(), pos.getY());

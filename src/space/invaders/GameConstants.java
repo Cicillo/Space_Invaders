@@ -179,7 +179,7 @@ public interface GameConstants {
 	/**
 	 * The time to freeze the game for when the player loses a life, in ticks.
 	 */
-	long DEATH_FREEZE_TIME = (long) (5 * GAME_TPS);
+	long FREEZE_TIME = (long) (5 * GAME_TPS);
 
 	/**
 	 * Score received for killing a dummy enemy.
