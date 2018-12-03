@@ -41,7 +41,7 @@ public class NormalProjectile extends Projectile {
 	@Override
 	public boolean tick() {
 		bounds.move(velocity);
-		return bounds.getMinY() <= 0;
+		return bounds.getMinY() <= 0 || bounds.getMaxY() >= GameConstants.BOTTOM_GAME_BOUND + 20;
 	}
 
 	@Override

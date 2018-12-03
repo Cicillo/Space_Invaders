@@ -38,12 +38,11 @@ public abstract class Enemy {
 		if (e instanceof NormalEnemy) {
 			return GameConstants.SCORE_NORMAL_KILLED;
 		}
-		
+
 		if (e instanceof SuperEnemy) {
 			return GameConstants.SCORE_SUPER_KILLED;
 		}
-		
-		
+
 		throw new IllegalArgumentException();
 	}
 
@@ -99,6 +98,14 @@ public abstract class Enemy {
 		this.displayPane = pane;
 		Platform.runLater(() -> pane.getChildren().add(animation));
 		return true;
+	}
+
+	public void moveAnimation(Vec2D origin) {
+		if (animation == null)
+			return;
+		
+		animation.xProperty().set(origin.getX() + GameConstants.ENEMY_DELTA.getX() * coords.getX());
+		animation.yProperty().set(origin.getY() + GameConstants.ENEMY_DELTA.getY() * coords.getY());
 	}
 
 	/**

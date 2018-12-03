@@ -61,10 +61,10 @@ public class Main extends Application {
 		musicPlayer.setOnReady(() -> {
 			musicPlayer.setStopTime(musicPlayer.getTotalDuration());
 			musicPlayer.setCycleCount(1000);
-			musicPlayer.setVolume(0.4);
+			musicPlayer.setVolume(0.1);
 			musicPlayer.play();
 		});
-		
+
 		ImageAnimation.initialize(executor);
 	}
 
@@ -75,6 +75,7 @@ public class Main extends Application {
 			if (ex instanceof EndGameException) {
 				gameTickTask.cancel(true);
 				renderTask.cancel(true);
+				System.out.println("end game!");
 			} else {
 				ex.printStackTrace(System.err);
 				throw new RuntimeException(ex);
@@ -88,7 +89,9 @@ public class Main extends Application {
 				pane.drawCanvas();
 			} catch (Exception ex) {
 				if (ex instanceof EndGameException) {
-
+					System.out.println("End of game!");
+					gameTickTask.cancel(true);
+					renderTask.cancel(true);
 				} else {
 					ex.printStackTrace(System.err);
 					throw new RuntimeException(ex);

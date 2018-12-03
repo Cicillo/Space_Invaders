@@ -8,6 +8,7 @@ import space.invaders.GameConstants;
 import space.invaders.GameLogic;
 import space.invaders.ImageResources;
 import space.invaders.IntegerCoordinates;
+import space.invaders.Vec2D;
 import space.invaders.projectiles.Projectile;
 
 /**
@@ -37,12 +38,19 @@ public class TankEnemy extends Enemy {
 		boolean success = super.initializeAnimation(pane);
 		if (success) {
 			shieldOverlay = new ImageView(SHIELD_MAX);
-			shieldOverlay.xProperty().bind(animation.xProperty());
-			shieldOverlay.yProperty().bind(animation.yProperty());
 			pane.getChildren().add(shieldOverlay);
 		}
 
 		return success;
+	}
+
+	@Override
+	public void moveAnimation(Vec2D origin) {
+		super.moveAnimation(origin);
+		if (shieldCapacity > 0) {
+			shieldOverlay.xProperty().set(origin.getX() + GameConstants.ENEMY_DELTA.getX() * getCoordinates().getX());
+			shieldOverlay.yProperty().set(origin.getY() + GameConstants.ENEMY_DELTA.getY() * getCoordinates().getY());
+		}
 	}
 
 	@Override

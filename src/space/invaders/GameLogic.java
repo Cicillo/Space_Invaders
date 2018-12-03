@@ -191,12 +191,7 @@ public class GameLogic {
 				IntegerCoordinates coords = new IntegerCoordinates(x, y);
 				Enemy enemy = makeEnemy(coords);
 				enemies.put(coords, enemy);
-				if (enemy.initializeAnimation(enemiesPane)) {
-					enemyPosition.addListener((observable, oldValue, newValue) -> {
-						enemy.getAnimation().xProperty().set(newValue.getX() + (GameConstants.ENEMY_DELTA.getX() * coords.getX()));
-						enemy.getAnimation().yProperty().set(newValue.getY() + (GameConstants.ENEMY_DELTA.getY() * coords.getY()));
-					});
-				}
+				enemy.initializeAnimation(enemiesPane);
 			}
 		}
 

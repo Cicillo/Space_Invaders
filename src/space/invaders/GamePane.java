@@ -20,9 +20,6 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
@@ -44,8 +41,7 @@ public class GamePane extends StackPane {
 	private final Label gameStatusLabel;
 	private final Rectangle spaceship;
 	private final GameLogic gameLogic;
-	private final MediaPlayer backgroundPlayer;
-	private final MediaView backgroundViewer;
+	private final ImageAnimation animation;
 
 	private long lastShotTime;
 	private volatile boolean mousePressed;
@@ -65,29 +61,7 @@ public class GamePane extends StackPane {
 		this.gameStatusLabel = new Label("");
 		this.spaceship = new Rectangle(GameConstants.LEFT_GAME_BOUND, GameConstants.SPACESHIP_Y, GameConstants.SPACESHIP_SIZE.getX(), GameConstants.SPACESHIP_SIZE.getX());
 
-		Media bg = MediaResources.BACKGROUND_ANIMATION.getMedia();
-		backgroundPlayer = new MediaPlayer(bg);
-		backgroundViewer = new MediaView(backgroundPlayer);
-		backgroundPlayer.setOnReady(() -> {
-			//backgroundPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-			backgroundPlayer.setOnEndOfMedia(() -> {
-				System.out.println("end");
-			});
-			backgroundPlayer.setOnRepeat(() -> {
-				System.out.println("repeat");
-			});
-			backgroundPlayer.setOnStopped(() -> {
-				System.out.println("stop");
-			});
-			backgroundPlayer.setOnHalted(() -> System.out.println("halted"));
-			backgroundPlayer.setOnStalled(() -> System.out.println("stalled"));
-			backgroundPlayer.setOnPaused(() -> System.out.println("paused"));
-			backgroundPlayer.setOnError(() -> {
-				backgroundPlayer.getError().printStackTrace();
-			});
-			backgroundPlayer.play();
-
-		});
+		animation = new ImageAnimation(AnimationResources.BACKGROUND.getAnimation());
 	}
 
 	public GameLogic getLogic() {
@@ -107,7 +81,8 @@ public class GamePane extends StackPane {
 		Label livesLabel = new Label("LIVES");
 
 		formatLabels(scoreTextLabel, levelTextLabel, highscoreTextLabel, scoreLabel, levelLabel, highscoreLabel, livesLabel, gameStatusLabel);
-
+		gameStatusLabel.setTextFill(Color.BLACK);
+		
 		AnchorPane.setLeftAnchor(livesLabel, GameConstants.LEFT_GAME_BOUND);
 		AnchorPane.setBottomAnchor(livesLabel, 3.0);
 
@@ -117,9 +92,9 @@ public class GamePane extends StackPane {
 		gameStatusLabel.prefWidthProperty().bind(scene.widthProperty());
 		gameStatusLabel.prefHeightProperty().bind(scene.heightProperty());
 
-		//backgroundViewer.fitWidthProperty().bind(scene.widthProperty());
-		backgroundViewer.fitHeightProperty().bind(scene.heightProperty());
-		StackPane.setAlignment(backgroundViewer, Pos.TOP_LEFT);
+		animation.fitWidthProperty().bind(scene.widthProperty());
+		animation.fitHeightProperty().bind(scene.heightProperty());
+		StackPane.setAlignment(animation, Pos.TOP_LEFT);
 
 		GridPane grid = new GridPane();
 		grid.getColumnConstraints().addAll(constr(HPos.LEFT), constr(HPos.CENTER), constr(HPos.RIGHT));
@@ -133,8 +108,9 @@ public class GamePane extends StackPane {
 		anchorPane.getChildren().addAll(grid, spaceship, livesLabel);
 
 		// Initialize game logic
-		getChildren().addAll(backgroundViewer, canvas, anchorPane, gameStatusLabel);
+		getChildren().addAll(animation, canvas, anchorPane, gameStatusLabel);
 		gameLogic.generateGame(this);
+		animation.play();
 
 		this.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
 
@@ -207,12 +183,18 @@ public class GamePane extends StackPane {
 		clearCanvas(graphics);
 
 		// 2. Draw Enemies
+		Vec2D enemyPosition = gameLogic.getEnemyPosition();
 		gameLogic.forEachEnemy(e -> {
 			if (e.getImage() == null)
 				return;
 
-			Vec2D pos = e.getPosition(gameLogic.getEnemyPosition());
+			Vec2D pos = e.getPosition(enemyPosition);
 			graphics.drawImage(e.getImage(), pos.getX(), pos.getY());
+		});
+		
+		// Move animated enemies
+		gameLogic.forEachEnemy(e -> {
+			e.moveAnimation(enemyPosition);
 		});
 
 		// 3. Draw projectiles

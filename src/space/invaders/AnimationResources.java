@@ -12,7 +12,8 @@ public enum AnimationResources {
 	// 1. Enemy Sprites
 	ENEMY_SPINNER(240, "animations/spinner/"),
 	ENEMY_LASER(240, "animations/laser/"),
-	ENEMY_TANK(240, "animations/tank/");
+	ENEMY_TANK(240, "animations/tank/"),
+	BACKGROUND(301, "animations/background/");
 
 	private final int frames;
 	private final String url;
