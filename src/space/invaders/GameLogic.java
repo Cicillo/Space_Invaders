@@ -20,7 +20,9 @@ import javafx.scene.layout.Pane;
 import space.invaders.enemies.DummyEnemy;
 import space.invaders.enemies.Enemy;
 import space.invaders.enemies.LaserEnemy;
+import space.invaders.enemies.NormalEnemy;
 import space.invaders.enemies.SpinnerEnemy;
+import space.invaders.enemies.SuperEnemy;
 import space.invaders.enemies.TankEnemy;
 import space.invaders.projectiles.NormalProjectile;
 import space.invaders.projectiles.Projectile;
@@ -82,7 +84,7 @@ public class GameLogic {
 
 	private Scene scene;
 	private final Robot robot;
-	
+
 	private Pane enemiesPane;
 
 	public GameLogic(ObservableDoubleValue spaceshipPosition) {
@@ -219,7 +221,10 @@ public class GameLogic {
 		char c = LEVEL_ENEMIES[coords.getY()].charAt(coords.getX());
 		switch (c) {
 			case 'N':
+				return new NormalEnemy(coords);
 			case 'S':
+				return new SuperEnemy(coords);
+			case 'E':
 				return new DummyEnemy(coords);
 			case 'T':
 				return new TankEnemy(coords);
@@ -355,7 +360,10 @@ public class GameLogic {
 					if (!(proj2 instanceof NormalProjectile) || !proj.collidesWith((NormalProjectile) proj2))
 						continue;
 
-					// Collision: remove both projectiles
+					// Collision: add score
+					scoreValue.set(GameConstants.SCORE_PROJECTILE_KILLED + scoreValue.get());
+
+					// Remove both projectiles
 					try {
 						it.remove();
 						it2.remove();

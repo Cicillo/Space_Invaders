@@ -1,51 +1,72 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package space.invaders.enemies;
 
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.Random;
 import javafx.scene.image.Image;
+import space.invaders.GameConstants;
 import space.invaders.GameLogic;
 import space.invaders.ImageResources;
 import space.invaders.IntegerCoordinates;
+import space.invaders.RectBounds;
+import space.invaders.Vec2D;
+import space.invaders.projectiles.NormalProjectile;
 import space.invaders.projectiles.Projectile;
 
 /**
  *
  * @author Frankie
  */
-public class NormalEnemy extends Enemy{
-	public NormalEnemy(Image image, IntegerCoordinates coords) {
+public class NormalEnemy extends Enemy {
+
+	private static final Image NORMAL_IMAGE = ImageResources.ENEMY_NORMAL.getImage();
+	private static final Image PROJECTILE_IMAGE = ImageResources.PROJECTILE_NORMAL.getImage();
+
+	private long cooldownTimer = -1;
+
+	public NormalEnemy(IntegerCoordinates coords) {
+		super(NORMAL_IMAGE, coords);
+	}
+
+	protected NormalEnemy(Image image, IntegerCoordinates coords) {
 		super(image, coords);
 	}
-	
-	public NormalEnemy(IntegerCoordinates coords) {
-		super(ImageResources.ENEMY_NORMAL.getImage(), coords);
-	}
 
+	@Override
 	public void tick(GameLogic logic) {
-		//TO DO: implement onShoot logic for normal enemy 
-		
-		//RNGesus to determine which enemy is firing. RNG to pick the index. Said enemy then fires
-		int randomEnemyShooter = ThreadLocalRandom.current().nextInt(0, 12); //chooses between index 0 and 11
-		//enemies[0][randomEnemyShooter] = shooter;
-		//get position of this shooter
-		//make a projectile using said position
-		
-		/*private final Rectangle spaceship;
-		Vec2D position = new Vec2D(spaceship.getX() + spaceship.getWidth() / 2, spaceship.getY() + spaceship.getHeight() / 2);
-		RectBounds projectileBounds = new RectBounds(position, GameConstants.PROJECTILE_SIZE);
-		Vec2D velocity = new Vec2D(0, GameConstants.PROJECTILE_SPEED);
-		NormalProjectile playerProjectile = new NormalProjectile(true, projectileBounds, velocity, NormalProjectile.DEFAULT_IMAGE);
-		space.invaders.GamePane.gameLogic.addProjectile(playerProjectile);
-		});*/
-	}
-		
+		// Initialize cooldown
+		if (cooldownTimer < 0) {
+			cooldownTimer = getCooldown(logic.getRandom());
+			return;
+		}
 
+		// Check cooldown
+		if (cooldownTimer > 0) {
+			--cooldownTimer;
+			return;
+		}
+
+		// Shoot projectile
+		Vec2D pos = getPosition(logic.getEnemyPosition())
+				.plus(GameConstants.ENEMY_SIZE.scale(0.5, 1))
+				.minus(GameConstants.PROJECTILE_SIZE.scale(0.5, 0));
+
+		RectBounds bounds = new RectBounds(pos, GameConstants.PROJECTILE_SIZE);
+
+		NormalProjectile proj = new NormalProjectile(false, bounds, new Vec2D(0, GameConstants.PROJECTILE_SPEED), PROJECTILE_IMAGE);
+		logic.addProjectile(proj);
+
+		// Update cooldown timer
+		cooldownTimer = getCooldown(logic.getRandom());
+	}
+
+	@Override
 	public boolean onHit(Projectile proj) {
 		//TO DO:implement collision logic
 		return true;
 	}
+
+	protected long getCooldown(Random rand) {
+		// Random cooldown between 3 and 6 seconds
+		return (long) ((3 + 3 * rand.nextDouble()) * GameConstants.GAME_TPS);
+	}
+
 }

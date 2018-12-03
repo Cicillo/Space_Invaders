@@ -1,37 +1,27 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package space.invaders.enemies;
 
+import java.util.Random;
 import javafx.scene.image.Image;
 import space.invaders.GameConstants;
-import space.invaders.GameLogic;
 import space.invaders.ImageResources;
 import space.invaders.IntegerCoordinates;
-import space.invaders.Vec2D;
-import space.invaders.projectiles.Projectile;
 
 /**
  *
  * @author Frankie
  */
-public class SuperEnemy extends Enemy {
+public class SuperEnemy extends NormalEnemy {
 
-	public SuperEnemy(Image image, IntegerCoordinates coords) {
-		super(image, coords);
-	}
+	private static final Image SUPER_IMAGE = ImageResources.ENEMY_SUPER.getImage();
+
 	public SuperEnemy(IntegerCoordinates coords) {
-		super(ImageResources.ENEMY_SUPER.getImage(), coords);
+		super(SUPER_IMAGE, coords);
 	}
-	public void tick(GameLogic logic) {
 
+	@Override
+	protected long getCooldown(Random rand) {
+		// Random cooldown between 3 and 6 seconds
+		return (long) ((3 + 3 * rand.nextDouble()) * GameConstants.GAME_TPS);
 	}
-		
-	public boolean onHit(Projectile proj) {
-		//TO DO:implement collision logic
-		return true;
-	}
+
 }
-

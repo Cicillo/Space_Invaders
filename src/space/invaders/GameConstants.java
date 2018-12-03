@@ -203,4 +203,9 @@ public interface GameConstants {
 	 * Score received for killing a laser enemy.
 	 */
 	int SCORE_LASER_KILLED = 40;
+
+	/**
+	 * Score received for destroying an enemy projectile.
+	 */
+	int SCORE_PROJECTILE_KILLED = 10;
 }

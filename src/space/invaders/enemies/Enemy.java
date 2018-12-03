@@ -35,6 +35,15 @@ public abstract class Enemy {
 			return GameConstants.SCORE_DUMMY_KILLED;
 		}
 
+		if (e instanceof NormalEnemy) {
+			return GameConstants.SCORE_NORMAL_KILLED;
+		}
+		
+		if (e instanceof SuperEnemy) {
+			return GameConstants.SCORE_SUPER_KILLED;
+		}
+		
+		
 		throw new IllegalArgumentException();
 	}
 
