@@ -65,8 +65,8 @@ public class NormalEnemy extends Enemy {
 	}
 
 	protected long getCooldown(Random rand) {
-		// Random cooldown between 3 and 6 seconds
-		return (long) ((3 + 3 * rand.nextDouble()) * GameConstants.GAME_TPS);
+		// Random cooldown between 8 and 14 seconds
+		return (long) ((8 + 6 * rand.nextDouble()) * GameConstants.GAME_TPS);
 	}
 
 }

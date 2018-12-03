@@ -20,8 +20,8 @@ public class SuperEnemy extends NormalEnemy {
 
 	@Override
 	protected long getCooldown(Random rand) {
-		// Random cooldown between 3 and 6 seconds
-		return (long) ((3 + 3 * rand.nextDouble()) * GameConstants.GAME_TPS);
+		// Random cooldown between 8 and 10 seconds
+		return (long) ((8 + 10 * rand.nextDouble()) * GameConstants.GAME_TPS);
 	}
 
 }
