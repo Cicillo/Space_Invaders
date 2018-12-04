@@ -68,7 +68,7 @@ public class Main extends Application {
 		musicPlayer.setOnReady(() -> {
 			musicPlayer.setStopTime(musicPlayer.getTotalDuration());
 			musicPlayer.setCycleCount(1000);
-			musicPlayer.setVolume(0.1);
+			musicPlayer.setVolume(0.5);
 			musicPlayer.play();
 		});
 

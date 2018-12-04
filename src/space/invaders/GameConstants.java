@@ -113,7 +113,7 @@ public interface GameConstants {
 	/**
 	 * The speed at which the super enemy's projectiles move, in pixels per tick.
 	 */
-	double PROJECTILE_SPEED_SUPER = 175 / GAME_TPS;
+	double PROJECTILE_SPEED_SUPER = 400 / GAME_TPS;
 	
 	/**
 	 * The speed at which friendly (allied + player) projectiles move, in pixels
@@ -174,7 +174,7 @@ public interface GameConstants {
 	/**
 	 * Delay between player shoots.
 	 */
-	long SHOOT_DELAY = 750;
+	long SHOOT_DELAY = 400;
 
 	/**
 	 * How many lives the player starts with.

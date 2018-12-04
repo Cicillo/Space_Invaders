@@ -1,12 +1,12 @@
 package space.invaders.enemies;
 
 import java.util.Random;
-import space.invaders.util.AnimationResources;
 import space.invaders.GameConstants;
 import space.invaders.GameLogic;
-import space.invaders.util.IntegerCoordinates;
 import space.invaders.projectiles.LaserProjectile;
 import space.invaders.projectiles.Projectile;
+import space.invaders.util.AnimationResources;
+import space.invaders.util.IntegerCoordinates;
 import space.invaders.util.MediaResources;
 
 /**
@@ -44,7 +44,7 @@ public class LaserEnemy extends Enemy {
         LaserProjectile proj = new LaserProjectile(this, logic.getEnemyPositionRef(), GameConstants.LASER_LIFETIME);
         logic.addProjectile(proj);
 
-        MediaResources.LASER_SHOOT_SOUND.playSound();
+        MediaResources.LASER_SHOOT_SOUND.playSound(1);
 
         // Update cooldown timer
         cooldownTimer = getCooldown(logic.getRandom());

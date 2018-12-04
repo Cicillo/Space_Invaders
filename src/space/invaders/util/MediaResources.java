@@ -30,7 +30,7 @@ public enum MediaResources {
 		return AssetManager.getSound(this);
 	}
 
-	public MediaPlayer playSound() {
+	public MediaPlayer playSound(double volume) {
 		Media media = getMedia();
 		if (media == null) {
 			return null;
@@ -38,6 +38,7 @@ public enum MediaResources {
 
 		MediaPlayer player = new MediaPlayer(media);
 		player.setOnReady(() -> {
+			player.setVolume(volume);
 			player.play();
 		});
 

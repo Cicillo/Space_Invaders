@@ -236,36 +236,12 @@ public class GameLogic {
 		downmostEnemy = GameConstants.ENEMIES_GRID_HEIGHT - 1;
 	}
 
-	private static final String[] LEVEL_TEST = {
-		"NSNSNSNSNSN",
-		"NNNNNNNNNNN",
-		"NNPNLNLNPNN",
-		"NTTNTNTNTTN",
-		"NNNTTTTTNNN"
-	};
-
-	private static final String[] LEVEL_LASERS = {
-		"LLLLLLLLLLL",
-		"LLLLLLLLLLL",
-		"LLLLLLLLLLL",
-		"LLLLLLLLLLL",
-		"LLLLLLLLLLL"
-	};
-
-	private static final String[] LEVEL_SUPERS = {
+	private static final String[] LEVEL_DEFAULT = {
 		"SSLSLSLSLSS",
 		"SSLSLSLSLSS",
 		"SSSSSSSSSSS",
 		"TTTTTTTTTTT",
 		"TTTTTTTTTTT"
-	};
-
-	private static final String[] LEVEL_SPINNERS = {
-		"TTTPPPPPTTT",
-		"TTTPPPPPTTT",
-		"TTTPPPPPTTT",
-		"TTTPPPPPTTT",
-		"TTTPPPPPTTT"
 	};
 
 	private void parseLevels() {
@@ -289,7 +265,7 @@ public class GameLogic {
 			sc.close();
 
 		} catch (FileNotFoundException ex) {
-			levels.add(LEVEL_SUPERS);
+			levels.add(LEVEL_DEFAULT);
 		}
 
 	}
@@ -393,7 +369,7 @@ public class GameLogic {
 				if (remove) {
 					IntegerCoordinates coords = collided.getCoordinates();
 					enemies.remove(coords);
-					MediaResources.ENEMY_KILLED_SOUND.playSound();
+					MediaResources.ENEMY_KILLED_SOUND.playSound(0.1);
 					if (collided.hasAnimation()) {
 						collided.getAnimation().stop();
 						Platform.runLater(() -> enemiesPane.getChildren().remove(collided.getAnimation()));
@@ -497,7 +473,7 @@ public class GameLogic {
 	}
 
 	public void removePlayerLife(int qty) {
-		MediaResources.PLAYER_KILLED_SOUND.playSound();
+		MediaResources.PLAYER_KILLED_SOUND.playSound(0.2);
 
 		// Decrement life count
 		if ((remainingLives -= qty) <= 0) {
@@ -514,7 +490,7 @@ public class GameLogic {
 		friendlyProjectiles.clear();
 		frozenTicks = GameConstants.FREEZE_TIME;
 
-		statusMessage.accept("You died! " + remainingLives + " lives left!");
+		statusMessage.accept("You died! " + remainingLives + " " + (remainingLives == 1 ? "life" : "lives") + " left!");
 	}
 
 	private void winGame() {

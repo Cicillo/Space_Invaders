@@ -183,7 +183,7 @@ public class GamePane extends StackPane {
 		NormalProjectile proj = new NormalProjectile(true, bounds, velocity, ImageResources.PROJECTILE_PLAYER.getImage());
 		gameLogic.addProjectile(proj);
 
-		MediaResources.NORMAL_SHOOT_SOUND.playSound();
+		MediaResources.NORMAL_SHOOT_SOUND.playSound(1);
 	}
 
 	public void drawCanvas() {

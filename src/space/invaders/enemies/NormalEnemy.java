@@ -62,7 +62,7 @@ public class NormalEnemy extends Enemy {
 		NormalProjectile proj = new NormalProjectile(false, bounds, new Vec2D(0, GameConstants.PROJECTILE_SPEED), PROJECTILE_IMAGE);
 		logic.addProjectile(proj);
 
-		MediaResources.NORMAL_SHOOT_SOUND.playSound();
+		MediaResources.NORMAL_SHOOT_SOUND.playSound(1);
 	}
 
 	@Override

@@ -40,13 +40,13 @@ public class SuperEnemy extends NormalEnemy {
 		NormalProjectile proj2 = new NormalProjectile(false, bounds2, new Vec2D(0, GameConstants.PROJECTILE_SPEED_SUPER), PROJECTILE_SUPER);
 		logic.addProjectile(proj2);
 
-		MediaResources.SUPER_SHOOT_SOUND.playSound();
+		MediaResources.SUPER_SHOOT_SOUND.playSound(1);
 	}
 
 	@Override
 	protected long getCooldown(Random rand) {
-		// Random cooldown between 8 and 10 seconds
-		return (long) ((8 + 10 * rand.nextDouble()) * GameConstants.GAME_TPS);
+		// Random cooldown between 5 and 7 seconds
+		return (long) ((5 + 2 * rand.nextDouble()) * GameConstants.GAME_TPS);
 	}
 
 }
