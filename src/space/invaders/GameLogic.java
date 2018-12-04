@@ -2,14 +2,10 @@ package space.invaders;
 
 import java.awt.AWTException;
 import java.awt.Robot;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-import java.util.Scanner;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
@@ -124,7 +120,7 @@ public class GameLogic {
 		this.enemiesPane = new Pane();
 		pane.getChildren().add(enemiesPane);
 
-		parseLevels();
+		initLevels();
 
 	}
 
@@ -236,38 +232,36 @@ public class GameLogic {
 		downmostEnemy = GameConstants.ENEMIES_GRID_HEIGHT - 1;
 	}
 
-	private static final String[] LEVEL_DEFAULT = {
-		"SSLSLSLSLSS",
-		"SSLSLSLSLSS",
-		"SSSSSSSSSSS",
-		"TTTTTTTTTTT",
-		"TTTTTTTTTTT"
-	};
-
-	private void parseLevels() {
+	private void initLevels() {
 		levels = new ArrayList<>();
-		try {
-			File file = new File("./level.txt");
-			Scanner sc = new Scanner(file);
-
-			int levelCount = sc.nextInt();
-			sc.nextLine();
-			for (int i = 0; i < levelCount; ++i) {
-				String str[] = new String[5];
-				for (int j = 0; j < GameConstants.ENEMIES_GRID_HEIGHT; ++j) {
-					str[j] = sc.nextLine();
-				}
-
-				System.out.println("Loaded level " + Arrays.toString(str));
-				levels.add(str);
-			}
-
-			sc.close();
-
-		} catch (FileNotFoundException ex) {
-			levels.add(LEVEL_DEFAULT);
-		}
-
+		levels.add(
+				new String[]{
+					"SSSPPPPPSSS",
+					"LNNNNLNNNNL",
+					"NNNNNNNNNNN",
+					"NNNNNNNNNNN",
+					"NNNNNNNNNNN"});
+		levels.add(
+				new String[]{
+					"NSSSNNNSSSN",
+					"NPPNLLLNPPN",
+					"NPPNNNNNPPN",
+					"NPPNTTTNPPN",
+					"NNNTTTTTNNN"});
+		levels.add(
+				new String[]{
+					"LLLLLLLLLLL",
+					"LLLLLLLLLLL",
+					"LLLLLLLLLLL",
+					"LLLLLLLLLLL",
+					"LLLLLLLLLLL"});
+		levels.add(
+				new String[]{
+					"PPPPPPPPPPP",
+					"LNLNNLNNLNL",
+					"NNNNNNNNNNN",
+					"NNNNNNNNNNN",
+					"NNNNNNNNNNN"});
 	}
 
 	private Enemy makeEnemy(IntegerCoordinates coords) {
