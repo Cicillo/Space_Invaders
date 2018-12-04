@@ -3,12 +3,12 @@ package space.invaders.projectiles;
 import javafx.geometry.Bounds;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.layout.Pane;
 import space.invaders.GameConstants;
 import space.invaders.GameLogic;
-import space.invaders.util.ImageResources;
+import space.invaders.enemies.Enemy;
 import space.invaders.util.RectBounds;
 import space.invaders.util.Vec2D;
-import space.invaders.enemies.Enemy;
 
 /**
  *
@@ -17,15 +17,10 @@ import space.invaders.enemies.Enemy;
 public class NormalProjectile extends Projectile {
 
 	public static final Vec2D DEFAULT_VELOCITY = new Vec2D(0, GameConstants.PROJECTILE_SPEED);
-	public static final Image DEFAULT_IMAGE = ImageResources.PROJECTILE_NORMAL.getImage();
 
 	private final Image image;
 	private final Vec2D velocity;
 	private final RectBounds bounds;
-
-	public NormalProjectile(boolean friendly, RectBounds bounds) {
-		this(friendly, bounds, DEFAULT_VELOCITY, DEFAULT_IMAGE);
-	}
 
 	public NormalProjectile(boolean friendly, RectBounds bounds, Vec2D velocity, Image image) {
 		super(friendly);
@@ -45,7 +40,7 @@ public class NormalProjectile extends Projectile {
 	}
 
 	@Override
-	public void draw(GraphicsContext graphics) {
+	public void draw(GraphicsContext graphics, Pane pane) {
 		graphics.drawImage(image, bounds.getMinX(), bounds.getMinY());
 	}
 

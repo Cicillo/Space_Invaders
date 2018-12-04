@@ -30,9 +30,15 @@ public enum ImageResources {
 	//
 	// 3. Projectiles
 	//
+	PROJECTILE_PLAYER("images/projectiles/projectile_player.png"),
 	PROJECTILE_NORMAL("images/projectiles/projectile_normal.png"),
+	PROJECTILE_SUPER("images/projectiles/projectile_super.png"),
 	PROJECTILE_LASER("images/projectiles/projectile_laser.png"),
-	PROJECTILE_SPINNER("images/projectiles/projectile_spinner.png");
+	PROJECTILE_SPINNER("images/projectiles/projectile_spinner.png"),
+	//	
+	// 4. Misc
+	//
+	ICON("images/icon.png");
 
 	private final String url;
 

@@ -4,13 +4,14 @@ import javafx.beans.value.ObservableValue;
 import javafx.geometry.Bounds;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.layout.Pane;
 import space.invaders.GameConstants;
 import space.invaders.GameLogic;
+import space.invaders.enemies.Enemy;
+import space.invaders.enemies.LaserEnemy;
 import space.invaders.util.ImageResources;
 import space.invaders.util.RectBounds;
 import space.invaders.util.Vec2D;
-import space.invaders.enemies.Enemy;
-import space.invaders.enemies.LaserEnemy;
 
 /**
  *
@@ -52,7 +53,7 @@ public class LaserProjectile extends Projectile {
 	}
 
 	@Override
-	public void draw(GraphicsContext graphics) {
+	public void draw(GraphicsContext graphics, Pane pane1) {
 		graphics.drawImage(LASER_IMAGE, bounds.getMinX(), bounds.getMinY(), bounds.getWidth(), bounds.getHeight());
 	}
 

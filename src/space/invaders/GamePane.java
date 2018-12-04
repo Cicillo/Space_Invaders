@@ -1,13 +1,6 @@
 package space.invaders;
 
-import space.invaders.util.ImageAnimation;
-import space.invaders.util.EndGameException;
-import space.invaders.util.ImageResources;
-import space.invaders.util.RectBounds;
-import space.invaders.util.Vec2D;
-import space.invaders.util.AnimationResources;
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.HPos;
@@ -28,11 +21,16 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import space.invaders.projectiles.NormalProjectile;
+import space.invaders.util.AnimationResources;
+import space.invaders.util.EndGameException;
+import space.invaders.util.ImageAnimation;
+import space.invaders.util.ImageResources;
 import space.invaders.util.MediaResources;
+import space.invaders.util.RectBounds;
+import space.invaders.util.Vec2D;
 
 /**
  *
@@ -47,7 +45,7 @@ public class GamePane extends StackPane {
 	private final Label levelLabel;
 	private final Label highscoreLabel;
 	private final Label gameStatusLabel;
-	private final Rectangle spaceship;
+	private final ImageAnimation spaceship;
 	private final GameLogic gameLogic;
 	private final ImageAnimation background;
 
@@ -67,7 +65,7 @@ public class GamePane extends StackPane {
 		this.levelLabel = new Label("1");
 		this.highscoreLabel = new Label(String.valueOf(highscore));
 		this.gameStatusLabel = new Label("");
-		this.spaceship = new Rectangle(GameConstants.LEFT_GAME_BOUND, GameConstants.SPACESHIP_Y, GameConstants.SPACESHIP_SIZE.getX(), GameConstants.SPACESHIP_SIZE.getX());
+		this.spaceship = new ImageAnimation(AnimationResources.SPACESHIP.getAnimation());
 
 		background = new ImageAnimation(AnimationResources.BACKGROUND.getAnimation());
 	}
@@ -80,7 +78,6 @@ public class GamePane extends StackPane {
 
 		// Initialize GUI
 		Scene scene = getScene();
-		spaceship.setFill(Color.BLUE);
 		canvas.widthProperty().bind(scene.widthProperty());
 		canvas.heightProperty().bind(scene.heightProperty());
 
@@ -107,6 +104,7 @@ public class GamePane extends StackPane {
 		gameStatusLabel.prefWidthProperty().bind(scene.widthProperty());
 		gameStatusLabel.prefHeightProperty().bind(scene.heightProperty());
 
+		background.setOpacity(0.5);
 		background.fitWidthProperty().bind(scene.widthProperty());
 		background.fitHeightProperty().bind(scene.heightProperty());
 		StackPane.setAlignment(background, Pos.TOP_LEFT);
@@ -130,6 +128,8 @@ public class GamePane extends StackPane {
 		gameLogic.generateGame();
 		getChildren().addAll(gameStatusLabel);
 		background.play();
+		spaceship.play();
+		spaceship.setY(GameConstants.SPACESHIP_Y);
 
 		this.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
 
@@ -155,7 +155,7 @@ public class GamePane extends StackPane {
 			return;
 		}
 
-		double pos = e.getSceneX() - GameConstants.SPACESHIP_SIZE.getX() / 2;
+		double pos = e.getSceneX() - GameConstants.SPACESHIP_DISPLAY_SIZE.getX() / 2;
 		if (gameLogic.isFrozen()) {
 			pos = GameConstants.LEFT_GAME_BOUND;
 		}
@@ -177,10 +177,10 @@ public class GamePane extends StackPane {
 		}
 
 		lastShotTime = System.currentTimeMillis();
-		Vec2D position = new Vec2D(spaceship.getX() + spaceship.getWidth() / 2, spaceship.getY() - GameConstants.PROJECTILE_SIZE.getY() / 2);
+		Vec2D position = new Vec2D(spaceship.getX() + (GameConstants.SPACESHIP_DISPLAY_SIZE.getX() / 2), spaceship.getY() - GameConstants.PROJECTILE_SIZE.getY() / 2);
 		RectBounds bounds = new RectBounds(position, GameConstants.PROJECTILE_SIZE);
 		Vec2D velocity = new Vec2D(0, GameConstants.PROJECTILE_SPEED_FRIENDLY);
-		NormalProjectile proj = new NormalProjectile(true, bounds, velocity, NormalProjectile.DEFAULT_IMAGE);
+		NormalProjectile proj = new NormalProjectile(true, bounds, velocity, ImageResources.PROJECTILE_PLAYER.getImage());
 		gameLogic.addProjectile(proj);
 
 		MediaResources.NORMAL_SHOOT_SOUND.playSound();
@@ -221,7 +221,7 @@ public class GamePane extends StackPane {
 		});
 
 		// 3. Draw projectiles
-		gameLogic.forEachProjectile(proj -> proj.draw(graphics));
+		gameLogic.forEachProjectile(proj -> proj.draw(graphics, gameLogic.getEnemiesPane()));
 
 		// 4. Draw life icons
 		Image image = ImageResources.SPACESHIP_ICON.getImage();

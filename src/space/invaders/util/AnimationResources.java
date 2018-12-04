@@ -13,6 +13,11 @@ public enum AnimationResources {
 	ENEMY_SPINNER(240, "animations/spinner/", "png"),
 	ENEMY_LASER(240, "animations/laser/", "png"),
 	ENEMY_TANK(240, "animations/tank/", "png"),
+	ENEMY_NORMAL(240, "animations/normal/", "png"),
+	ENEMY_SUPER(240, "animations/super/", "png"),
+	SPACESHIP(240, "animations/player/", "png"),
+	PROJECTILE_SUPER(120, "animations/projectile_super/", "png"),
+	PROJECTILE_LASER(120, "animations/projectile_laser/", "png"),
 	BACKGROUND(301, "animations/background/", "jpg");
 
 	private final int frames;

@@ -2,9 +2,10 @@ package space.invaders.projectiles;
 
 import javafx.geometry.Bounds;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.layout.Pane;
 import space.invaders.GameLogic;
-import space.invaders.util.RectBounds;
 import space.invaders.enemies.Enemy;
+import space.invaders.util.RectBounds;
 
 public abstract class Projectile {
 
@@ -34,11 +35,13 @@ public abstract class Projectile {
 	public abstract boolean tick();
 
 	/**
-	 * Draws this projectile onto the given {@code GraphicsContext}.
+	 * Draws this projectile onto the given {@code GraphicsContext} or on the
+	 * given pane.
 	 *
 	 * @param graphics the graphics onto which this projectile should be drawn.
+	 * @param pane the pane to which this projectile should be added to.
 	 */
-	public abstract void draw(GraphicsContext graphics);
+	public abstract void draw(GraphicsContext graphics, Pane pane);
 
 	/**
 	 * Returns whether or not this projectile collides with the given bounding

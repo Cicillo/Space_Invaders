@@ -1,8 +1,5 @@
 package space.invaders;
 
-import space.invaders.util.IntegerCoordinates;
-import space.invaders.util.RectBounds;
-import space.invaders.util.Vec2D;
 import java.awt.AWTException;
 import java.awt.Robot;
 import java.io.File;
@@ -19,10 +16,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import javafx.application.Platform;
-import javafx.beans.InvalidationListener;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableDoubleValue;
 import javafx.beans.value.ObservableIntegerValue;
 import javafx.beans.value.ObservableValue;
@@ -37,7 +32,10 @@ import space.invaders.enemies.SuperEnemy;
 import space.invaders.enemies.TankEnemy;
 import space.invaders.projectiles.NormalProjectile;
 import space.invaders.projectiles.Projectile;
+import space.invaders.util.IntegerCoordinates;
 import space.invaders.util.MediaResources;
+import space.invaders.util.RectBounds;
+import space.invaders.util.Vec2D;
 
 /**
  *
@@ -57,7 +55,7 @@ public class GameLogic {
 	private int downmostEnemy;
 	private int remainingLives;
 	private long frozenTicks;
-	
+
 	private volatile int gameState;
 
 	/**
@@ -132,6 +130,10 @@ public class GameLogic {
 
 	public Random getRandom() {
 		return random;
+	}
+
+	public Pane getEnemiesPane() {
+		return enemiesPane;
 	}
 
 	public ObservableIntegerValue getScore() {
@@ -279,11 +281,11 @@ public class GameLogic {
 				for (int j = 0; j < GameConstants.ENEMIES_GRID_HEIGHT; ++j) {
 					str[j] = sc.nextLine();
 				}
-				
+
 				System.out.println("Loaded level " + Arrays.toString(str));
 				levels.add(str);
 			}
-			
+
 			sc.close();
 
 		} catch (FileNotFoundException ex) {
@@ -533,7 +535,7 @@ public class GameLogic {
 		Platform.runLater(() -> {
 			generateGame();
 		});
-		
+
 		statusMessage.accept("LEVEL " + (1 + level) + "!");
 	}
 

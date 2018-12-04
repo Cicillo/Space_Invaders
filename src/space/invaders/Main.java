@@ -1,9 +1,5 @@
 package space.invaders;
 
-import space.invaders.util.AssetManager;
-import space.invaders.util.ImageAnimation;
-import space.invaders.util.EndGameException;
-import space.invaders.util.MediaResources;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -20,6 +16,11 @@ import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
+import space.invaders.util.AssetManager;
+import space.invaders.util.EndGameException;
+import space.invaders.util.ImageAnimation;
+import space.invaders.util.ImageResources;
+import space.invaders.util.MediaResources;
 
 /**
  *
@@ -50,6 +51,8 @@ public class Main extends Application {
 		Scene scene = new Scene(pane, GameConstants.SCREEN_SIZE.getX(), GameConstants.SCREEN_SIZE.getY());
 		pane.initialize();
 
+		stage.getIcons().add(ImageResources.ICON.getImage());
+		
 		stage.setScene(scene);
 		stage.setResizable(false);
 		stage.setTitle("Space Invaders");

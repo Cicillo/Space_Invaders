@@ -34,6 +34,11 @@ public interface GameConstants {
 	Vec2D SPACESHIP_SIZE = new Vec2D(30, 30);
 
 	/**
+	 * The size of the spaceship model.
+	 */
+	Vec2D SPACESHIP_DISPLAY_SIZE = new Vec2D(50, 50);
+
+	/**
 	 * Left bound of the game area. Enemies bounce when they reach this.
 	 */
 	double LEFT_GAME_BOUND = 20;
@@ -108,7 +113,7 @@ public interface GameConstants {
 	/**
 	 * The speed at which the super enemy's projectiles move, in pixels per tick.
 	 */
-	double PROJECTILE_SPEED_SUPER = 125 / GAME_TPS;
+	double PROJECTILE_SPEED_SUPER = 175 / GAME_TPS;
 	
 	/**
 	 * The speed at which friendly (allied + player) projectiles move, in pixels
@@ -119,7 +124,7 @@ public interface GameConstants {
 	/**
 	 * The size of a normal projectile.
 	 */
-	Vec2D PROJECTILE_SIZE = new Vec2D(7, 25);
+	Vec2D PROJECTILE_SIZE = new Vec2D(9, 25);
 
 	/**
 	 * The initial size of a laser projectile.
