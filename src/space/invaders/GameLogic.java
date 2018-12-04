@@ -57,7 +57,7 @@ public class GameLogic {
 	private int downmostEnemy;
 	private int remainingLives;
 	private long frozenTicks;
-
+	
 	private volatile int gameState;
 
 	/**
@@ -279,11 +279,11 @@ public class GameLogic {
 				for (int j = 0; j < GameConstants.ENEMIES_GRID_HEIGHT; ++j) {
 					str[j] = sc.nextLine();
 				}
-
+				
 				System.out.println("Loaded level " + Arrays.toString(str));
 				levels.add(str);
 			}
-
+			
 			sc.close();
 
 		} catch (FileNotFoundException ex) {
@@ -530,8 +530,10 @@ public class GameLogic {
 		frozenTicks = GameConstants.FREEZE_TIME;
 
 		currentLevel.set(level);
-		generateGame();
-
+		Platform.runLater(() -> {
+			generateGame();
+		});
+		
 		statusMessage.accept("LEVEL " + (1 + level) + "!");
 	}
 
