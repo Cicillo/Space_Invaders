@@ -28,8 +28,8 @@ public class ImageAnimation extends ImageView {
 		}, delay, delay, TimeUnit.MILLISECONDS);
 	}
 
-	private int index;
-	private boolean played;
+	private boolean playing;
+	private volatile int index;
 	private ObservableList<Image> images;
 
 	public ImageAnimation(ObservableList<Image> images) {
@@ -37,21 +37,25 @@ public class ImageAnimation extends ImageView {
 	}
 
 	public boolean play() {
-		if (played)
+		if (playing)
 			return false;
 
-		played = true;
+		playing = true;
 		animations.add(this);
 		return true;
 	}
 
 	public boolean stop() {
-		if (!played)
+		if (!playing)
 			return false;
 
-		played = false;
+		playing = false;
 		animations.remove(this);
 		return true;
+	}
+
+	public Image getCurrentImage() {
+		return images.get(index);
 	}
 
 	public void setImages(ObservableList<Image> images) {

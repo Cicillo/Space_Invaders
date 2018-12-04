@@ -1,13 +1,14 @@
 package space.invaders.enemies;
 
 import java.util.Random;
-import javafx.scene.image.Image;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.layout.Pane;
 import space.invaders.GameConstants;
 import space.invaders.GameLogic;
 import space.invaders.projectiles.NormalProjectile;
 import space.invaders.projectiles.Projectile;
 import space.invaders.util.AnimationResources;
-import space.invaders.util.ImageResources;
+import space.invaders.util.ImageAnimation;
 import space.invaders.util.IntegerCoordinates;
 import space.invaders.util.MediaResources;
 import space.invaders.util.RectBounds;
@@ -19,86 +20,99 @@ import space.invaders.util.Vec2D;
  */
 public class SpinnerEnemy extends Enemy {
 
-    private static long getCooldown(Random rand) {
-        // Random cooldown between 18 and 25 seconds
-        return (long) ((18 + 7 * rand.nextDouble()) * GameConstants.GAME_TPS);
-    }
+	private static long getCooldown(Random rand) {
+		// Random cooldown between 18 and 25 seconds
+		return (long) ((18 + 7 * rand.nextDouble()) * GameConstants.GAME_TPS);
+	}
 
-    private static final Image PELLET_IMAGE = ImageResources.PROJECTILE_SPINNER.getImage();
+	private static final ImageAnimation PROJECTILE_ANIMATION;
 
-    private long shootingTimer = -1;
-    private long cooldownTimer = (long) (25 * GameConstants.GAME_TPS * Math.random());
+	static {
+		PROJECTILE_ANIMATION = new ImageAnimation(AnimationResources.PROJECTILE_SPINNER.getAnimation());
+		PROJECTILE_ANIMATION.play();
+	}
 
-    public SpinnerEnemy(IntegerCoordinates coords) {
-        super(AnimationResources.ENEMY_SPINNER, coords);
-    }
+	private long shootingTimer = -1;
+	private long cooldownTimer = (long) (25 * GameConstants.GAME_TPS * Math.random());
 
-    @Override
-    public void tick(GameLogic logic) {
-        if (shootingTimer >= 0) {
-            shoot(logic);
-            return;
-        }
+	public SpinnerEnemy(IntegerCoordinates coords) {
+		super(AnimationResources.ENEMY_SPINNER, coords);
+	}
 
-        // Initialize cooldown
-        if (cooldownTimer < 0) {
-            cooldownTimer = getCooldown(logic.getRandom());
-            return;
-        }
+	@Override
+	public void tick(GameLogic logic) {
+		if (shootingTimer >= 0) {
+			shoot(logic);
+			return;
+		}
 
-        // Check cooldown
-        if (cooldownTimer > 0) {
-            --cooldownTimer;
-            return;
-        }
+		// Initialize cooldown
+		if (cooldownTimer < 0) {
+			cooldownTimer = getCooldown(logic.getRandom());
+			return;
+		}
 
-        shootingTimer = 1 + (GameConstants.SPINNER_SHOOT_COUNT * GameConstants.SPINNER_SHOOT_DELAY);
-    }
+		// Check cooldown
+		if (cooldownTimer > 0) {
+			--cooldownTimer;
+			return;
+		}
 
-    private void shoot(GameLogic logic) {
-        // Update shooting timer
-        --shootingTimer;
+		shootingTimer = 1 + (GameConstants.SPINNER_SHOOT_COUNT * GameConstants.SPINNER_SHOOT_DELAY);
+	}
 
-        // Check for end of shooting
-        if (shootingTimer <= 0) {
-            // Done shooting; set cooldown.
-            cooldownTimer = getCooldown(logic.getRandom());
-            return;
-        }
+	private void shoot(GameLogic logic) {
+		// Update shooting timer
+		--shootingTimer;
 
-        // Delay inbetween pellets
-        if (shootingTimer % GameConstants.SPINNER_SHOOT_DELAY != 0) {
-            return;
-        }
+		// Check for end of shooting
+		if (shootingTimer <= 0) {
+			// Done shooting; set cooldown.
+			cooldownTimer = getCooldown(logic.getRandom());
+			return;
+		}
 
-        Vec2D position = getPosition(logic.getEnemyPosition());
+		// Delay inbetween pellets
+		if (shootingTimer % GameConstants.SPINNER_SHOOT_DELAY != 0) {
+			return;
+		}
 
-        // Shoot pellets
-        double slope = 2 * GameConstants.SPINNER_MAX_ANGLE / (GameConstants.SPINNER_PELLET_COUNT - 1);
-        double offset = -(GameConstants.SPINNER_MAX_ANGLE + Math.PI / 2);
-        for (int i = 0; i < GameConstants.SPINNER_PELLET_COUNT; ++i) {
-            // Compute angle
-            double angle = offset + (i * slope);
+		Vec2D position = getPosition(logic.getEnemyPosition());
 
-            // Compute velocity
-            Vec2D velocity = new Vec2D(Math.cos(angle), -Math.sin(angle)).scale(GameConstants.PROJECTILE_SPEED);
+		// Shoot pellets
+		double slope = 2 * GameConstants.SPINNER_MAX_ANGLE / (GameConstants.SPINNER_PELLET_COUNT - 1);
+		double offset = -(GameConstants.SPINNER_MAX_ANGLE + Math.PI / 2);
+		for (int i = 0; i < GameConstants.SPINNER_PELLET_COUNT; ++i) {
+			// Compute angle
+			double angle = offset + (i * slope);
 
-            // Get position of pellet
-            Vec2D pelletPosition = position
-                    .plus(GameConstants.ENEMY_SIZE.scale(0.5, 1))
-                    .minus(GameConstants.SPINNER_PELLET_SIZE.scale(0.5, 0));
+			// Compute velocity
+			Vec2D velocity = new Vec2D(Math.cos(angle), -Math.sin(angle)).scale(GameConstants.PROJECTILE_SPEED);
 
-            RectBounds bounds = new RectBounds(pelletPosition, GameConstants.SPINNER_PELLET_SIZE);
-            NormalProjectile proj = new NormalProjectile(false, bounds, velocity, PELLET_IMAGE);
-            logic.addProjectile(proj);
-        }
+			// Get position of pellet
+			Vec2D pelletPosition = position
+					.plus(GameConstants.ENEMY_SIZE.scale(0.5, 1))
+					.minus(GameConstants.SPINNER_PELLET_SIZE.scale(0.5, 0));
 
-        MediaResources.SPINNER_SHOOT_SOUND.playSound(0.6);
-    }
+			RectBounds bounds = new RectBounds(pelletPosition, GameConstants.SPINNER_PELLET_SIZE);
+			NormalProjectile proj = new NormalProjectile(false, bounds, velocity, null) {
 
-    @Override
-    public boolean onHit(Projectile proj) {
-        return true;
-    }
+				@Override
+				public void draw(GraphicsContext graphics, Pane pane) {
+					RectBounds projBounds = getBounds();
+					graphics.drawImage(PROJECTILE_ANIMATION.getCurrentImage(), projBounds.getMinX(), projBounds.getMinY());
+				}
+
+			};
+			logic.addProjectile(proj);
+		}
+
+		MediaResources.SPINNER_SHOOT_SOUND.playSound(0.6);
+	}
+
+	@Override
+	public boolean onHit(Projectile proj) {
+		return true;
+	}
 
 }
