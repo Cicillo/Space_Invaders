@@ -507,6 +507,11 @@ public class GameLogic {
 		enemyProjectiles.clear();
 		frozenTicks = GameConstants.FREEZE_TIME;
 
+		if (remainingLives < 3)
+			remainingLives = 3;
+		else
+			++remainingLives;
+
 		currentLevel.set(level);
 		Platform.runLater(() -> {
 			generateGame();
