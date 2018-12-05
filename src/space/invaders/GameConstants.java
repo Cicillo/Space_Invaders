@@ -187,11 +187,6 @@ public interface GameConstants {
 	long FREEZE_TIME = (long) (5 * GAME_TPS);
 
 	/**
-	 * Score received for killing a dummy enemy.
-	 */
-	int SCORE_DUMMY_KILLED = 5;
-
-	/**
 	 * Score received for killing a normal enemy.
 	 */
 	int SCORE_NORMAL_KILLED = 10;
