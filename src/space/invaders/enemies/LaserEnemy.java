@@ -44,7 +44,7 @@ public class LaserEnemy extends Enemy {
         LaserProjectile proj = new LaserProjectile(this, logic.getEnemyPositionRef(), GameConstants.LASER_LIFETIME);
         logic.addProjectile(proj);
 
-        MediaResources.LASER_SHOOT_SOUND.playSound(1);
+        MediaResources.LASER_SHOOT_SOUND.playSound(0.5);
 
         // Update cooldown timer
         cooldownTimer = getCooldown(logic.getRandom());
