@@ -3,14 +3,14 @@ package space.invaders.enemies;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
-import space.invaders.util.AnimationResources;
 import space.invaders.GameConstants;
 import space.invaders.GameLogic;
+import space.invaders.projectiles.Projectile;
+import space.invaders.util.AnimationResources;
 import space.invaders.util.ImageAnimation;
 import space.invaders.util.IntegerCoordinates;
 import space.invaders.util.RectBounds;
 import space.invaders.util.Vec2D;
-import space.invaders.projectiles.Projectile;
 
 /**
  *
@@ -29,10 +29,6 @@ public abstract class Enemy {
 
 		if (e instanceof TankEnemy) {
 			return GameConstants.SCORE_TANK_KILLED;
-		}
-
-		if (e instanceof DummyEnemy) {
-			return GameConstants.SCORE_DUMMY_KILLED;
 		}
 
 		if (e instanceof NormalEnemy) {

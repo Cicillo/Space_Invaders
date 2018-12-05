@@ -19,7 +19,6 @@ import javafx.beans.value.ObservableIntegerValue;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
-import space.invaders.enemies.DummyEnemy;
 import space.invaders.enemies.Enemy;
 import space.invaders.enemies.LaserEnemy;
 import space.invaders.enemies.NormalEnemy;
@@ -271,8 +270,6 @@ public class GameLogic {
 				return new NormalEnemy(coords);
 			case 'S':
 				return new SuperEnemy(coords);
-			case 'E':
-				return new DummyEnemy(coords);
 			case 'T':
 				return new TankEnemy(coords);
 			case 'P':

@@ -224,9 +224,9 @@ public class GamePane extends StackPane {
 		gameLogic.forEachProjectile(proj -> proj.draw(graphics, gameLogic.getEnemiesPane()));
 
 		// 4. Draw life icons
-		Image image = ImageResources.SPACESHIP_ICON.getImage();
+		Image image = ImageResources.SPACESHIP.getImage();
 		double x = 150;
-		double y = GameConstants.BOTTOM_GAME_BOUND + 95;
+		double y = GameConstants.BOTTOM_GAME_BOUND + 75;
 		for (int i = 0; i < gameLogic.getRemainingLives(); ++i) {
 			graphics.drawImage(image, x, y);
 			x += 50;
