@@ -249,11 +249,11 @@ public class GameLogic {
 					"NNNTTTTTNNN"});
 		levels.add(
 				new String[]{
-					"LLLLLLLLLLL",
-					"LLLLLLLLLLL",
-					"LLLLLLLLLLL",
-					"LLLLLLLLLLL",
-					"LLLLLLLLLLL"});
+					"SSSLSLSLSSS",
+					"NTSTSTSTSTN",
+					"NPNPPPPPPNN",
+					"NTNTNTNTNTN",
+					"NNNNNNNNNNN"});
 		levels.add(
 				new String[]{
 					"PPPPPPPPPPP",
